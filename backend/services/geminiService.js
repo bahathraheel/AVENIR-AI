@@ -70,7 +70,31 @@ const callGeminiWithRetry = async (prompt, maxRetries = 3) => {
         }
 
         const cleaned = cleanJsonString(text);
-        const parsed = JSON.parse(cleaned);
+        let parsed;
+        try {
+          parsed = JSON.parse(cleaned);
+        } catch (parseErr) {
+          // Robust JSON object/array extraction fallback for malformed or wrapped responses
+          const firstBrace = cleaned.indexOf('{');
+          const lastBrace = cleaned.lastIndexOf('}');
+          if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            try {
+              parsed = JSON.parse(cleaned.substring(firstBrace, lastBrace + 1));
+            } catch (_) {}
+          }
+          if (!parsed) {
+            const firstSquare = cleaned.indexOf('[');
+            const lastSquare = cleaned.lastIndexOf(']');
+            if (firstSquare !== -1 && lastSquare !== -1 && lastSquare > firstSquare) {
+              try {
+                parsed = JSON.parse(cleaned.substring(firstSquare, lastSquare + 1));
+              } catch (_) {}
+            }
+          }
+          if (!parsed) {
+            throw parseErr;
+          }
+        }
         const jsonDuration = performance.now() - tJsonStart;
         jsonValidationDuration += jsonDuration;
 
@@ -484,18 +508,50 @@ Return ONLY a valid JSON array of exactly ${count} objects matching this EXACT s
 };
 
 /**
+ * Official 5-Category Weighted Scoring Matrix
+ * Technical Accuracy: 30%
+ * Problem Solving & Logical Reasoning: 25%
+ * Communication & Clarity: 20%
+ * Completeness & Depth: 15%
+ * Practical Knowledge: 10%
+ * Total: 100%
+ */
+const EVALUATION_WEIGHTS = {
+  technicalAccuracy: 0.30,
+  problemSolving: 0.25,
+  communication: 0.20,
+  completeness: 0.15,
+  practicalKnowledge: 0.10,
+};
+
+/**
+ * Calculates weighted score from standard 5 category scores (strictly 0-100)
+ */
+const calculateWeightedScore = (catScores) => {
+  const tech = Math.min(100, Math.max(0, parseInt(catScores?.technicalAccuracy, 10) || 0));
+  const prob = Math.min(100, Math.max(0, parseInt(catScores?.problemSolving, 10) || 0));
+  const comm = Math.min(100, Math.max(0, parseInt(catScores?.communication, 10) || 0));
+  const comp = Math.min(100, Math.max(0, parseInt(catScores?.completeness, 10) || 0));
+  const pract = Math.min(100, Math.max(0, parseInt(catScores?.practicalKnowledge, 10) || 0));
+
+  const weighted = (tech * EVALUATION_WEIGHTS.technicalAccuracy) +
+    (prob * EVALUATION_WEIGHTS.problemSolving) +
+    (comm * EVALUATION_WEIGHTS.communication) +
+    (comp * EVALUATION_WEIGHTS.completeness) +
+    (pract * EVALUATION_WEIGHTS.practicalKnowledge);
+
+  return Math.min(100, Math.max(0, Math.round(weighted)));
+};
+
+/**
  * b) evaluateInterviewAnswer
- * Evaluates candidate's answer with dedicated, category-specific scoring rubrics:
- * - Coding: correctness, efficiency, edgeCases, codeQuality
- * - HR: relevance, communication, completeness, professionalism
- * - Technical: technicalAccuracy, reasoning, completeness, clarity
- * - Behavioral: starStructure, relevance, reflection, communication
- * - Domain-Specific: domainExpertise, practicalImplementation, industryStandards, completeness
+ * Evaluates candidate's actual answer against expected concepts with zero score on skip.
+ * Computes official 5 weighted categories and per-question score breakdown.
  */
 const evaluateInterviewAnswer = async ({
   question,
   answer,
-  jobRole = 'Candidate',
+  jobRole = 'Software Professional',
   interviewType = 'technical',
   difficulty = 'medium',
   programmingLanguage = null,
@@ -505,250 +561,316 @@ const evaluateInterviewAnswer = async ({
 }) => {
   try {
     const category = normaliseInterviewType(interviewType);
+    const categoryMeta = getInterviewCategoryMetadata(category);
+
+    const questionText = typeof question === 'string'
+      ? question
+      : (question?.questionText || question?.title || question?.description || question?.question || 'Interview Question');
+    
+    let knownExpected = [];
+    if (Array.isArray(questionDetails?.expectedConcepts) && questionDetails.expectedConcepts.length > 0) {
+      knownExpected = questionDetails.expectedConcepts;
+    } else if (Array.isArray(questionDetails?.expectedTopics) && questionDetails.expectedTopics.length > 0) {
+      knownExpected = questionDetails.expectedTopics;
+    } else if (Array.isArray(question?.expectedTopics) && question.expectedTopics.length > 0) {
+      knownExpected = question.expectedTopics;
+    } else if (Array.isArray(question?.expectedConcepts) && question.expectedConcepts.length > 0) {
+      knownExpected = question.expectedConcepts;
+    }
+    if (knownExpected.length === 0) {
+      const qWords = questionText.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((w) => w.length > 3 && !['what', 'when', 'where', 'which', 'explain', 'describe', 'difference', 'between', 'does', 'how', 'with', 'their'].includes(w));
+      knownExpected = qWords.length > 0 ? qWords.slice(0, 5) : ['Core Concepts', 'Implementation Details', 'Edge Cases'];
+    }
+
+    const isCoding = category === 'coding' || Boolean(sourceCode);
     const effectiveAnswer = (typeof answer === 'string' ? answer : (sourceCode || '')).trim();
 
-    // Fast path for empty or unattempted answer
-    if (!effectiveAnswer && (!testResults || testResults.totalCount === 0)) {
-      const emptyCatScores = {};
-      if (category === 'coding') {
-        Object.assign(emptyCatScores, { correctness: 0, efficiency: 0, edgeCases: 0, codeQuality: 0 });
-      } else if (category === 'hr') {
-        Object.assign(emptyCatScores, { relevance: 0, communication: 0, completeness: 0, professionalism: 0 });
-      } else if (category === 'behavioral') {
-        Object.assign(emptyCatScores, { starStructure: 0, relevance: 0, reflection: 0, communication: 0 });
-      } else if (category === 'domain-specific') {
-        Object.assign(emptyCatScores, { domainExpertise: 0, practicalImplementation: 0, industryStandards: 0, completeness: 0 });
-      } else {
-        Object.assign(emptyCatScores, { technicalAccuracy: 0, reasoning: 0, completeness: 0, clarity: 0 });
-      }
+    // Check for explicit skip, empty, or unattempted answer
+    const cleanLower = effectiveAnswer.toLowerCase();
+    const isSkipped = !effectiveAnswer ||
+      cleanLower === '[skipped]' ||
+      cleanLower === 'skipped' ||
+      cleanLower === '[skip]' ||
+      cleanLower === 'skip' ||
+      effectiveAnswer.length === 0;
 
+    if (isSkipped && (!testResults || testResults.totalCount === 0)) {
       return {
+        status: 'SKIPPED',
+        questionIndex: questionDetails?.index ?? null,
+        question: questionText,
+        candidateAnswer: '[Skipped - No answer submitted]',
+        expectedConcepts: knownExpected,
+        correctlyExplainedConcepts: [],
+        correctlyExplained: [],
+        missingConcepts: knownExpected,
+        incorrectStatements: [],
+        technicalCorrectness: 0,
+        completeness: 0,
+        categoryScores: {
+          technicalAccuracy: 0,
+          problemSolving: 0,
+          communication: 0,
+          completeness: 0,
+          practicalKnowledge: 0,
+          technicalCorrectness: 0,
+          clarity: 0,
+        },
+        categories: {
+          technicalAccuracy: 0,
+          problemSolving: 0,
+          communication: 0,
+          completeness: 0,
+          practicalKnowledge: 0,
+        },
+        score: 0,
         overallScore: 0,
-        category,
-        categoryScores: emptyCatScores,
-        categories: emptyCatScores, // Backwards compatibility
+        explanation: 'Question was skipped by candidate. Zero marks awarded.',
+        marksJustification: 'Question was skipped by candidate. Zero marks awarded.',
+        explanationOfMarks: 'Question was skipped by candidate. Zero marks awarded.',
         strengths: [],
-        weaknesses: ['No response or code solution was provided for this question.'],
-        suggestions: [
-          'Never leave an interview question blank.',
-          category === 'coding' ? 'Write out partial pseudo-code or handle the brute force case.' : 'Provide concrete real-world context and steps.',
-        ],
-        feedback: 'No response submitted. Zero points awarded.',
+        keyStrengths: [],
+        weaknesses: ['Question was skipped. Core concepts were not demonstrated.'],
+        areasForImprovement: ['Question was skipped. Core concepts were not demonstrated.'],
+        improvementSuggestions: ['Practice answering questions on this topic instead of skipping to gain partial credit.'],
+        feedback: 'Question was skipped. 0/100 marks awarded.',
+        idealAnswer: questionDetails?.idealAnswer || questionDetails?.modelAnswer || 'A strong response outlines the core concept, implementation tradeoffs, and real-world edge cases.',
       };
     }
 
-    let prompt = '';
+    // Prepare evaluation prompt for Gemini
+    const testSummary = testResults
+      ? `${testResults.passedCount}/${testResults.totalCount} test cases passed.`
+      : 'No automated test executions.';
+    const testDetails = testResults?.results ? JSON.stringify(testResults.results.slice(0, 5)) : 'N/A';
 
-    if (category === 'coding') {
-      const codePayload = sourceCode || effectiveAnswer;
-      const testSummary = testResults ? `${testResults.passedCount}/${testResults.totalCount} test cases passed.` : 'No test cases executed.';
-      const testDetails = testResults?.results ? JSON.stringify(testResults.results.slice(0, 5)) : 'N/A';
+    const prompt = `You are an elite, highly experienced Lead Technical Interviewer and Hiring Panel Member at AVENIR AI.
+Evaluate this candidate's response to the interview question below strictly on merit.
 
-      prompt = `You are a Principal Software Engineer and Coding Evaluator at AVENIR AI.
-Evaluate this candidate's code submission for the coding problem below.
+CRITICAL EVALUATION RULES:
+1. Base your evaluation ONLY on what the candidate ACTUALLY stated or implemented.
+2. NEVER invent candidate knowledge, experience, or achievements.
+3. Compare the response directly against standard expected concepts for "${jobRole}".
+4. Accept alternative technically correct approaches or valid paradigms.
+5. If the answer is partially correct, award appropriate partial marks and explicitly distinguish what was correctly stated vs what was omitted.
+6. If the answer contains incorrect statements, misconceptions, or logic bugs, identify each specifically in "incorrectStatements".
+7. If the answer is completely irrelevant, nonsensical, or off-topic (e.g. "I like pizza"), award 0 marks across all technical categories.
+8. Score each of the 5 categories strictly between 0 and 100 based on actual evidence:
+   - "technicalAccuracy": Factual accuracy of statements, algorithm validity, freedom from errors.
+   - "problemSolving": Logical reasoning, handling edge cases, computational complexity, trade-off analysis.
+   - "communication": Clarity of articulation, structure of thought, precision of technical vocabulary.
+   - "completeness": Depth of coverage across all aspects of the prompt without omissions.
+   - "practicalKnowledge": Real-world applicability, production considerations, industry standards.
 
-Job Role: "${jobRole}"
-Difficulty: "${difficulty}"
-Problem: "${typeof question === 'string' ? question : (question?.title || question?.description || 'Coding Problem')}"
-Programming Language Used: "${programmingLanguage || 'c'}"
+Interview Context:
+- Target Role: "${jobRole}"
+- Track: "${categoryMeta.label}"
+- Difficulty Level: "${difficulty}"
+- Question: "${questionText}"
+${knownExpected.length > 0 ? `- Target Expected Concepts: ${JSON.stringify(knownExpected)}` : ''}
+
+Candidate's Actual Response:
+"""
+${effectiveAnswer}
+"""
+${isCoding ? `
+Programming Language: "${programmingLanguage || 'c'}"
 Candidate Source Code:
 \`\`\`${programmingLanguage || 'c'}
-${codePayload}
+${sourceCode || effectiveAnswer}
 \`\`\`
-Sandboxed Test Execution Results:
-${testSummary}
-Details: ${testDetails}
+Test Suite Summary: ${testSummary}
+` : ''}
 
-IMPORTANT: Evaluate the actual algorithmic validity, time complexity, and code quality. Do not fabricate test outcomes.
-Return ONLY a valid JSON object matching this EXACT schema:
+Return ONLY a valid JSON object with this exact structure (scores must be real numbers 0-100 reflecting the actual answer):
 {
-  "overallScore": 85,
+  "expectedConcepts": ["concept1", "concept2", "concept3"],
+  "correctlyExplainedConcepts": ["concepts accurately explained by candidate"],
+  "missingConcepts": ["concepts missing or incorrectly stated"],
+  "incorrectStatements": ["any wrong statements or misconceptions in answer, or empty array if none"],
   "categoryScores": {
-    "correctness": 85,
-    "efficiency": 80,
-    "edgeCases": 85,
-    "codeQuality": 90
+    "technicalAccuracy": 0,
+    "problemSolving": 0,
+    "communication": 0,
+    "completeness": 0,
+    "practicalKnowledge": 0
   },
-  "timeComplexity": "O(N log N)",
-  "spaceComplexity": "O(N)",
-  "strengths": [
-    "Specific algorithmic strength 1",
-    "Clean code structure strength 2"
-  ],
-  "weaknesses": [
-    "Specific edge case or efficiency weakness 1"
-  ],
-  "modelSolution": "Concise optimal solution in ${programmingLanguage || 'c'}...",
-  "suggestions": [
-    "Concrete actionable optimization tip"
-  ],
-  "feedback": "Concise 2-sentence executive summary of code performance."
+  "explanation": "Clear, objective breakdown of why these marks were awarded, referencing candidate's exact statements.",
+  "strengths": ["genuine demonstrated strength (empty array if answer was incorrect or poor)"],
+  "weaknesses": ["specific gap or mistake"],
+  "improvementSuggestions": ["concrete actionable study advice for this question"],
+  "idealAnswer": "A concise, high-impact model answer demonstrating complete technical mastery."
 }
 `;
-    } else if (category === 'hr') {
-      prompt = `You are a Senior Talent Partner and Executive HR Assessor at AVENIR AI.
-Evaluate this candidate's HR interview response.
 
-Job Role: "${jobRole}"
-Difficulty: "${difficulty}"
-Interview Question: "${typeof question === 'string' ? question : (question?.questionText || question?.question || 'HR Question')}"
-Candidate Answer: "${effectiveAnswer}"
+    let parsed = null;
+    try {
+      parsed = await callGeminiWithRetry(prompt);
+    } catch (apiErr) {
+      console.warn('[Gemini evaluateInterviewAnswer Fallback]:', apiErr.message);
+      // Deterministic fallback if API fails
+      const wordCount = effectiveAnswer.split(/\s+/).filter(Boolean).length;
+      const isVeryShort = wordCount < 10;
+      const lowerAns = effectiveAnswer.toLowerCase();
+      const qWords = new Set(questionText.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((w) => w.length > 3));
 
-Assess interpersonal skills, professional demeanor, culture fit, and clarity.
-Return ONLY a valid JSON object matching this EXACT schema:
-{
-  "overallScore": 88,
-  "categoryScores": {
-    "relevance": 90,
-    "communication": 85,
-    "completeness": 85,
-    "professionalism": 90
-  },
-  "strengths": [
-    "Demonstrated maturity and strong ownership",
-    "Clear, structured communication"
-  ],
-  "weaknesses": [
-    "Could provide more concrete data on outcome"
-  ],
-  "suggestedTalkingPoints": [
-    "Frame the resolution around team impact"
-  ],
-  "suggestions": [
-    "Keep answers focused under 2-3 minutes"
-  ],
-  "feedback": "Executive HR summary of response."
-}
-`;
-    } else if (category === 'behavioral') {
-      prompt = `You are a Senior Behavioral Assessor at AVENIR AI.
-Evaluate this candidate's response using the STAR methodology (Situation, Task, Action, Result).
+      // Match against expected concepts, ignoring words that only repeat the prompt question
+      const matchedConcepts = knownExpected.filter((c) => {
+        const cLower = c.toLowerCase();
+        if (lowerAns.includes(cLower)) return true;
+        const words = cLower.split(/\s+/).filter((w) => w.length > 3 && !qWords.has(w));
+        return words.length > 0 && words.filter((w) => lowerAns.includes(w)).length >= Math.ceil(words.length / 2);
+      });
+      const missing = knownExpected.filter((c) => !matchedConcepts.includes(c));
+      const matchRatio = knownExpected.length > 0 ? (matchedConcepts.length / knownExpected.length) : 0;
 
-Job Role: "${jobRole}"
-Difficulty: "${difficulty}"
-Question: "${typeof question === 'string' ? question : (question?.questionText || question?.question || 'Behavioral Question')}"
-Candidate Answer: "${effectiveAnswer}"
+      let baseScore;
+      if (isVeryShort) {
+        baseScore = matchedConcepts.length > 0 ? 60 : 5;
+      } else if (matchedConcepts.length === 0) {
+        // Zero concepts matched: irrelevant or completely incorrect
+        baseScore = 5;
+      } else if (matchRatio >= 0.5 || (wordCount >= 30 && matchedConcepts.length >= 2)) {
+        baseScore = Math.min(94, Math.max(80, Math.round(78 + (matchRatio * 16))));
+      } else {
+        baseScore = Math.min(70, Math.max(45, Math.round(45 + (matchRatio * 25))));
+      }
 
-Evaluate whether Situation, Task, Action, and Result are present, quantified, and convincing.
-Return ONLY a valid JSON object matching this EXACT schema:
-{
-  "overallScore": 84,
-  "categoryScores": {
-    "starStructure": 85,
-    "relevance": 88,
-    "reflection": 80,
-    "communication": 85
-  },
-  "starBreakdown": {
-    "situation": "Evaluation of context provided",
-    "task": "Evaluation of task ownership",
-    "action": "Evaluation of concrete steps taken",
-    "result": "Evaluation of measurable outcome"
-  },
-  "strengths": [
-    "Strong narrative arc with clear actions",
-    "Accountability demonstrated"
-  ],
-  "weaknesses": [
-    "Result could be supported with stronger metrics"
-  ],
-  "suggestions": [
-    "Quantify business or engineering impact (e.g. latency reduced by 30%)"
-  ],
-  "feedback": "Executive behavioral assessment summary."
-}
-`;
-    } else if (category === 'domain-specific') {
-      prompt = `You are an Industry Domain Specialist and Technical Authority at AVENIR AI.
-Evaluate this candidate's answer for the specialized domain role of "${jobRole}".
-
-Domain Question: "${typeof question === 'string' ? question : (question?.questionText || question?.question || 'Domain Question')}"
-Candidate Answer: "${effectiveAnswer}"
-
-Evaluate domain depth, industry compliance, production feasibility, and accuracy.
-Return ONLY a valid JSON object matching this EXACT schema:
-{
-  "overallScore": 86,
-  "categoryScores": {
-    "domainExpertise": 88,
-    "practicalImplementation": 85,
-    "industryStandards": 85,
-    "completeness": 85
-  },
-  "strengths": [
-    "Solid understanding of production constraints",
-    "Accurate industry terminology"
-  ],
-  "weaknesses": [
-    "Missed key regulatory or monitoring nuance"
-  ],
-  "suggestions": [
-    "Cite specific industry framework standards"
-  ],
-  "feedback": "Domain specialist assessment summary."
-}
-`;
-    } else {
-      // Technical Interview
-      prompt = `You are a Principal Systems Architect at AVENIR AI.
-Evaluate this candidate's technical response for "${jobRole}".
-
-Technical Question: "${typeof question === 'string' ? question : (question?.questionText || question?.question || 'Technical Question')}"
-Candidate Answer: "${effectiveAnswer}"
-
-Evaluate technical correctness, architectural reasoning, depth, and clarity.
-Return ONLY a valid JSON object matching this EXACT schema:
-{
-  "overallScore": 85,
-  "categoryScores": {
-    "technicalAccuracy": 88,
-    "reasoning": 85,
-    "completeness": 80,
-    "clarity": 85
-  },
-  "strengths": [
-    "Accurate explanation of underlying mechanics",
-    "Good awareness of trade-offs"
-  ],
-  "weaknesses": [
-    "Could address edge-case failure modes in greater detail"
-  ],
-  "missingConcepts": [
-    "Distributed consensus and cache invalidation"
-  ],
-  "correctAnswer": "Model architectural explanation...",
-  "suggestions": [
-    "Always discuss both read and write trade-offs"
-  ],
-  "feedback": "Technical evaluation summary."
-}
-`;
+      parsed = {
+        expectedConcepts: knownExpected,
+        correctlyExplainedConcepts: matchedConcepts.length > 0 ? matchedConcepts : (isVeryShort ? [] : [knownExpected[0] || 'Foundational principles']),
+        missingConcepts: missing.length > 0 ? missing : (matchedConcepts.length === 0 ? knownExpected : []),
+        incorrectStatements: [],
+        categoryScores: {
+          technicalAccuracy: baseScore,
+          problemSolving: Math.max(0, baseScore - 5),
+          communication: Math.min(100, baseScore + 5),
+          completeness: isVeryShort ? 20 : baseScore,
+          practicalKnowledge: Math.max(0, baseScore - 8),
+        },
+        explanation: `Evaluated in offline fallback mode. Answer contained ${wordCount} words and addressed ${matchedConcepts.length} expected concepts.`,
+        strengths: isVeryShort || baseScore < 60 ? [] : ['Attempted comprehensive response with relevant technical terminology.'],
+        weaknesses: isVeryShort ? ['Response was very brief and lacked detail.'] : (missing.length > 0 ? [`Missed key topics: ${missing.slice(0, 2).join(', ')}.`] : ['Elaborate with deeper architectural specifics.']),
+        improvementSuggestions: ['Review comprehensive technical documentation for this topic.'],
+        idealAnswer: questionDetails?.idealAnswer || 'A structured response covering definition, implementation tradeoffs, and failure modes.'
+      };
     }
 
-    const evaluation = await callGeminiWithRetry(prompt);
-    const overallScore = Math.min(100, Math.max(0, parseInt(evaluation.overallScore, 10) || 50));
-    const rawCategoryScores = evaluation.categoryScores || evaluation.categories || {};
-    const sanitizedCatScores = {};
+    const expectedConcepts = Array.isArray(parsed?.expectedConcepts) && parsed.expectedConcepts.length > 0
+      ? parsed.expectedConcepts
+      : knownExpected;
 
-    Object.keys(rawCategoryScores).forEach((k) => {
-      sanitizedCatScores[k] = Math.min(100, Math.max(0, parseInt(rawCategoryScores[k], 10) || overallScore));
-    });
+    const correctlyExplained = Array.isArray(parsed?.correctlyExplainedConcepts)
+      ? parsed.correctlyExplainedConcepts
+      : [];
+    const missingConcepts = Array.isArray(parsed?.missingConcepts)
+      ? parsed.missingConcepts
+      : [];
+    const incorrectStatements = Array.isArray(parsed?.incorrectStatements)
+      ? parsed.incorrectStatements
+      : [];
+
+    const rawCat = parsed?.categoryScores || {};
+
+    let techAcc = Math.min(100, Math.max(0, parseInt(rawCat.technicalAccuracy, 10) || 0));
+    let probSolv = Math.min(100, Math.max(0, parseInt(rawCat.problemSolving, 10) || 0));
+    let comm = Math.min(100, Math.max(0, parseInt(rawCat.communication, 10) || 0));
+    let comp = Math.min(100, Math.max(0, parseInt(rawCat.completeness, 10) || 0));
+    let pract = Math.min(100, Math.max(0, parseInt(rawCat.practicalKnowledge, 10) || 0));
+
+    // Guard against irrelevant / nonsense responses (e.g., "I like pizza", "asdfgh")
+    const words = effectiveAnswer.split(/\s+/).filter(Boolean);
+    const isNonsenseOrIrrelevant = (words.length < 4) ||
+      (correctlyExplained.length === 0 && (techAcc > 20 || probSolv > 20) && missingConcepts.length >= expectedConcepts.length);
+
+    if (isNonsenseOrIrrelevant && correctlyExplained.length === 0) {
+      techAcc = Math.min(techAcc, 10);
+      probSolv = Math.min(probSolv, 10);
+      comp = Math.min(comp, 10);
+      pract = Math.min(pract, 10);
+    }
+
+    // Calculate official weighted score
+    const finalScore = Math.min(100, Math.max(0, Math.round(
+      (techAcc * EVALUATION_WEIGHTS.technicalAccuracy) +
+      (probSolv * EVALUATION_WEIGHTS.problemSolving) +
+      (comm * EVALUATION_WEIGHTS.communication) +
+      (comp * EVALUATION_WEIGHTS.completeness) +
+      (pract * EVALUATION_WEIGHTS.practicalKnowledge)
+    )));
+
+    // Contradiction guards for strengths
+    let strengths = Array.isArray(parsed?.strengths)
+      ? parsed.strengths.filter((s) => s && typeof s === 'string' && s.trim().length > 0)
+      : [];
+    let weaknesses = Array.isArray(parsed?.weaknesses)
+      ? parsed.weaknesses.filter((w) => w && typeof w === 'string' && w.trim().length > 0)
+      : [];
+
+    if (finalScore < 35 || techAcc < 30) {
+      // Filter out contradictory praise if score is failing
+      strengths = strengths.filter((s) => {
+        const lower = s.toLowerCase();
+        return !lower.includes('strong') && !lower.includes('deep') && !lower.includes('mastery') && !lower.includes('excellent');
+      });
+      if (finalScore < 25) {
+        strengths = [];
+      }
+    }
+
+    if (weaknesses.length === 0 && finalScore < 85) {
+      if (missingConcepts.length > 0) {
+        weaknesses.push(`Omitted discussion of: ${missingConcepts.slice(0, 2).join(', ')}.`);
+      } else {
+        weaknesses.push('Could provide deeper edge case analysis and concrete metrics.');
+      }
+    }
+
+    const suggestions = Array.isArray(parsed?.improvementSuggestions) && parsed.improvementSuggestions.length > 0
+      ? parsed.improvementSuggestions
+      : (Array.isArray(parsed?.suggestions) ? parsed.suggestions : ['Review core principles for this question.']);
 
     return {
-      overallScore,
-      category,
-      categoryScores: sanitizedCatScores,
-      categories: sanitizedCatScores, // Backwards compatibility
-      timeComplexity: evaluation.timeComplexity || null,
-      spaceComplexity: evaluation.spaceComplexity || null,
-      starBreakdown: evaluation.starBreakdown || null,
-      strengths: Array.isArray(evaluation.strengths) ? evaluation.strengths : ['Clear answer provided.'],
-      weaknesses: Array.isArray(evaluation.weaknesses) ? evaluation.weaknesses : ['Elaborate with more concrete production examples.'],
-      missingConcepts: Array.isArray(evaluation.missingConcepts) ? evaluation.missingConcepts : [],
-      modelSolution: evaluation.modelSolution || evaluation.correctAnswer || null,
-      correctAnswer: evaluation.correctAnswer || evaluation.modelSolution || null,
-      suggestions: Array.isArray(evaluation.suggestions) ? evaluation.suggestions : [],
-      feedback: evaluation.feedback || 'Answer evaluated successfully according to round rubric.',
+      status: 'ANSWERED',
+      questionIndex: questionDetails?.index ?? null,
+      question: questionText,
+      candidateAnswer: effectiveAnswer,
+      expectedConcepts,
+      correctlyExplainedConcepts: correctlyExplained,
+      correctlyExplained,
+      missingConcepts,
+      incorrectStatements,
+      technicalCorrectness: techAcc,
+      completeness: comp,
+      categoryScores: {
+        technicalAccuracy: techAcc,
+        problemSolving: probSolv,
+        communication: comm,
+        completeness: comp,
+        practicalKnowledge: pract,
+        technicalCorrectness: techAcc,
+        clarity: comm,
+      },
+      categories: {
+        technicalAccuracy: techAcc,
+        problemSolving: probSolv,
+        communication: comm,
+        completeness: comp,
+        practicalKnowledge: pract,
+      },
+      score: finalScore,
+      overallScore: finalScore,
+      explanation: parsed?.explanation || `Awarded ${finalScore}/100 (Technical Accuracy: ${techAcc}%, Completeness: ${comp}%).`,
+      marksJustification: parsed?.explanation || `Awarded ${finalScore}/100 (Technical Accuracy: ${techAcc}%, Completeness: ${comp}%).`,
+      explanationOfMarks: parsed?.explanation || `Awarded ${finalScore}/100 (Technical Accuracy: ${techAcc}%, Completeness: ${comp}%).`,
+      strengths,
+      keyStrengths: strengths,
+      weaknesses,
+      areasForImprovement: weaknesses,
+      improvementSuggestions: suggestions,
+      suggestions,
+      feedback: parsed?.explanation || `Score: ${finalScore}/100`,
+      idealAnswer: parsed?.idealAnswer || questionDetails?.idealAnswer || questionDetails?.modelAnswer || 'A structured response covering definition, implementation tradeoffs, and failure modes.',
     };
   } catch (error) {
     console.error('[Gemini Service] evaluateInterviewAnswer Error:', error.message);
@@ -1285,13 +1407,14 @@ Ensure "sevenDayPlan" contains exactly 7 sequential days (Day 1 through Day 7).`
 
 /**
  * f) generateInterviewReport
- * Produces a comprehensive multi-question interview synthesis and final assessment.
+ * Produces an accurate, mathematically verified interview synthesis based on actual candidate responses.
+ * Enforces weighted scoring across 5 categories and prevents contradictory feedback.
  */
 const generateInterviewReport = async ({
   questions = [],
   answers = [],
   evaluations = [],
-  jobRole = 'Candidate',
+  jobRole = 'Software Professional',
   interviewType = 'technical',
   difficulty = 'medium',
 }) => {
@@ -1299,83 +1422,278 @@ const generateInterviewReport = async ({
     const category = normaliseInterviewType(interviewType);
     const categoryMeta = getInterviewCategoryMetadata(category);
 
-    const transcript = questions.map((q, i) => {
-      const qTitle = typeof q === 'string' ? q : (q.title || q.questionText || q.question || `Question ${i + 1}`);
-      const aText = answers[i] || 'No answer recorded';
-      const evalObj = evaluations[i] || {};
-      return `[Q${i + 1} - ${categoryMeta.label}]: ${qTitle}\n[Candidate Answer]: ${aText}\n[Score]: ${evalObj.overallScore ?? 'N/A'}/100`;
-    }).join('\n\n');
+    const evaluatedQuestions = [];
+    let totalScoreSum = 0;
+    let totalTechSum = 0;
+    let totalProbSum = 0;
+    let totalCommSum = 0;
+    let totalCompSum = 0;
+    let totalPractSum = 0;
+    let answeredCount = 0;
+    let skippedCount = 0;
 
-    let schemaRubric = '';
-    if (category === 'coding') {
-      schemaRubric = `"categoryScores": { "correctness": 85, "efficiency": 80, "edgeCases": 85, "codeQuality": 90 }`;
-    } else if (category === 'hr') {
-      schemaRubric = `"categoryScores": { "relevance": 90, "communication": 85, "completeness": 85, "professionalism": 90 }`;
-    } else if (category === 'behavioral') {
-      schemaRubric = `"categoryScores": { "starStructure": 85, "relevance": 88, "reflection": 80, "communication": 85 }`;
-    } else if (category === 'domain-specific') {
-      schemaRubric = `"categoryScores": { "domainExpertise": 88, "practicalImplementation": 85, "industryStandards": 85, "completeness": 85 }`;
-    } else {
-      schemaRubric = `"categoryScores": { "technicalAccuracy": 85, "reasoning": 85, "completeness": 80, "clarity": 85 }`;
+    const N = Math.max(1, questions.length);
+
+    // Step 1: Ensure 100% of questions have a complete, verified evaluation
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      const qIdxStr = String(i);
+      const rawAns = (answers && typeof answers === 'object' && !Array.isArray(answers))
+        ? (answers[qIdxStr] ?? answers[q.id] ?? '')
+        : (Array.isArray(answers) ? (answers[i] || '') : '');
+
+      const existingEval = (evaluations && typeof evaluations === 'object' && !Array.isArray(evaluations))
+        ? (evaluations[qIdxStr] ?? evaluations[q.id] ?? null)
+        : (Array.isArray(evaluations) ? evaluations[i] : null);
+
+      const effectiveAns = typeof rawAns === 'string' ? rawAns.trim() : (rawAns?.code || '');
+      const cleanLower = effectiveAns.toLowerCase();
+      const isSkip = !effectiveAns ||
+        cleanLower === '[skipped]' ||
+        cleanLower === 'skipped' ||
+        cleanLower === '[skip]' ||
+        cleanLower === 'skip' ||
+        effectiveAns.length === 0;
+
+      let qEval = existingEval;
+
+      if (!qEval || !qEval.categoryScores || (isSkip && qEval.status !== 'SKIPPED')) {
+        qEval = await evaluateInterviewAnswer({
+          question: q,
+          answer: isSkip ? '[Skipped]' : effectiveAns,
+          jobRole,
+          interviewType,
+          difficulty,
+          questionDetails: { ...(typeof q === 'object' ? q : {}), index: i },
+        });
+      }
+
+      if (isSkip || qEval.status === 'SKIPPED') {
+        skippedCount++;
+        qEval = {
+          ...qEval,
+          status: 'SKIPPED',
+          score: 0,
+          overallScore: 0,
+          technicalCorrectness: 0,
+          completeness: 0,
+          categoryScores: {
+            technicalAccuracy: 0,
+            problemSolving: 0,
+            communication: 0,
+            completeness: 0,
+            practicalKnowledge: 0,
+            technicalCorrectness: 0,
+            clarity: 0,
+          },
+          strengths: [],
+          candidateAnswer: '[Skipped - No answer submitted]',
+        };
+      } else {
+        answeredCount++;
+      }
+
+      const cat = qEval.categoryScores || {};
+      totalTechSum += (cat.technicalAccuracy || 0);
+      totalProbSum += (cat.problemSolving || 0);
+      totalCommSum += (cat.communication || 0);
+      totalCompSum += (cat.completeness || 0);
+      totalPractSum += (cat.practicalKnowledge || 0);
+      totalScoreSum += (qEval.score ?? qEval.overallScore ?? 0);
+
+      evaluatedQuestions.push({
+        ...qEval,
+        questionIndex: i,
+        question: typeof q === 'string' ? q : (q.title || q.questionText || q.question || `Question ${i + 1}`),
+        candidateAnswer: isSkip ? '[Skipped - No answer submitted]' : effectiveAns,
+      });
     }
 
-    const prompt = `You are the Lead Hiring Panel Reviewer at AVENIR AI.
-Synthesize the complete ${categoryMeta.label} session for the candidate:
-- Role: "${jobRole}"
-- Interview Category: "${categoryMeta.label}" (${category})
-- Difficulty: "${difficulty}"
+    // Step 2: Compute verified category averages across all N questions
+    const techAvg = Math.min(100, Math.max(0, Math.round(totalTechSum / N)));
+    const probAvg = Math.min(100, Math.max(0, Math.round(totalProbSum / N)));
+    const commAvg = Math.min(100, Math.max(0, Math.round(totalCommSum / N)));
+    const compAvg = Math.min(100, Math.max(0, Math.round(totalCompSum / N)));
+    const practAvg = Math.min(100, Math.max(0, Math.round(totalPractSum / N)));
 
-Interview Transcript and Performance:
+    const finalOverallScore = Math.min(100, Math.max(0, Math.round(
+      (techAvg * EVALUATION_WEIGHTS.technicalAccuracy) +
+      (probAvg * EVALUATION_WEIGHTS.problemSolving) +
+      (commAvg * EVALUATION_WEIGHTS.communication) +
+      (compAvg * EVALUATION_WEIGHTS.completeness) +
+      (practAvg * EVALUATION_WEIGHTS.practicalKnowledge)
+    )));
+
+    const categoryScores = {
+      technicalAccuracy: techAvg,
+      problemSolving: probAvg,
+      communication: commAvg,
+      completeness: compAvg,
+      practicalKnowledge: practAvg,
+      // Backward compatibility aliases
+      technicalCorrectness: techAvg,
+      clarity: commAvg,
+    };
+
+    // Step 3: All Questions Skipped Scenario
+    if (answeredCount === 0) {
+      const allExpected = [];
+      evaluatedQuestions.forEach((eq) => {
+        (eq.expectedConcepts || []).forEach((c) => {
+          if (!allExpected.includes(c)) allExpected.push(c);
+        });
+      });
+
+      return {
+        overallScore: 0,
+        isInsufficientData: true,
+        status: 'skipped_all',
+        category,
+        categoryLabel: categoryMeta.label,
+        categoryScores: {
+          technicalAccuracy: 0,
+          problemSolving: 0,
+          communication: 0,
+          completeness: 0,
+          practicalKnowledge: 0,
+          technicalCorrectness: 0,
+          clarity: 0,
+        },
+        weights: EVALUATION_WEIGHTS,
+        scoreCalculationExplanation: 'All questions were skipped by candidate. Score: 0/100.',
+        strengths: [],
+        keyStrengths: [],
+        weaknesses: ['All interview questions were skipped. No technical or problem-solving capability was demonstrated.'],
+        areasForImprovement: ['All interview questions were skipped. No technical or problem-solving capability was demonstrated.'],
+        missedConcepts: allExpected.slice(0, 8),
+        executiveSummary: 'Interview incomplete: All questions were skipped by the candidate. Insufficient data to evaluate interview readiness.',
+        improvementPlan: [
+          {
+            title: 'Attempt Every Question',
+            desc: 'In technical interviews, skipping awards 0 points. Providing even a partial attempt or brute-force approach allows evaluators to score problem-solving and communication.'
+          },
+          {
+            title: `Review Core ${jobRole} Syllabus`,
+            desc: 'Revise core concepts and practice under timed interview conditions to build response confidence.'
+          }
+        ],
+        recommendations: ['Schedule a new mock interview session and attempt every question.'],
+        questionEvaluations: evaluatedQuestions,
+        answeredCount: 0,
+        skippedCount: N,
+        totalQuestions: N,
+      };
+    }
+
+    // Step 4: Candidate Answered Questions - Call Gemini for synthesis
+    const isPartial = answeredCount < Math.ceil(N / 2);
+
+    const transcript = evaluatedQuestions.map((eq, i) => {
+      return `[Question ${i + 1}]: "${eq.question}"
+Status: ${eq.status}
+Candidate Answer: "${eq.candidateAnswer}"
+Score: ${eq.score}/100 (Tech: ${eq.categoryScores?.technicalAccuracy}%, ProblemSolving: ${eq.categoryScores?.problemSolving}%, Comm: ${eq.categoryScores?.communication}%)
+Correctly Explained: ${JSON.stringify(eq.correctlyExplainedConcepts || [])}
+Missed Concepts: ${JSON.stringify(eq.missingConcepts || [])}
+Feedback: ${eq.explanation}`;
+    }).join('\n\n');
+
+    const synthesisPrompt = `You are the Lead Hiring Panel Reviewer at AVENIR AI.
+Synthesize the final mock interview report for a candidate interviewing for "${jobRole}" (${difficulty} level).
+
+CANDIDATE PERFORMANCE SUMMARY:
+- Total Questions: ${N}
+- Answered Questions: ${answeredCount}
+- Skipped Questions: ${skippedCount}
+- Verified Technical Accuracy: ${techAvg}%
+- Verified Problem Solving: ${probAvg}%
+- Verified Communication: ${commAvg}%
+- Verified Completeness: ${compAvg}%
+- Verified Practical Knowledge: ${practAvg}%
+- Final Weighted Score: ${finalOverallScore}/100
+
+DETAILED PER-QUESTION TRANSCRIPT:
 """
 ${transcript}
 """
 
-Evaluate their overall performance using the ${categoryMeta.label} evaluation rubric.
-Return ONLY a valid JSON object with this EXACT schema:
+CRITICAL SYNTHESIS RULES:
+1. Synthesize an objective executive summary reflecting the candidate's actual answers.
+2. Strengths: List 2-4 genuine strengths demonstrated in the answered questions. NEVER praise skipped or incorrect topics. If performance was poor, return only what was verified.
+3. Weaknesses: List 2-4 specific areas for improvement, addressing errors, omissions, or skipped questions.
+4. Missed Concepts: Extract 3-6 unique concepts the candidate missed or struggled with.
+5. Improvement Plan: 3 actionable study topics with title and description tailored to the candidate's missed concepts.
+6. Recommendations: 2 concrete next career steps.
+
+Return ONLY a valid JSON object matching this schema:
 {
-  "overallScore": 84,
-  ${schemaRubric},
-  "strengths": [
-    "Identified clear strength 1",
-    "Identified clear strength 2"
-  ],
-  "weaknesses": [
-    "Identified area for improvement 1",
-    "Identified area for improvement 2"
-  ],
-  "missedConcepts": [
-    "Critical concept, pattern, or nuance missed"
-  ],
+  "executiveSummary": "...",
+  "strengths": ["..."],
+  "weaknesses": ["..."],
+  "missedConcepts": ["..."],
   "improvementPlan": [
-    "Actionable step 1 in candidate prep",
-    "Actionable step 2 in candidate prep"
+    { "title": "Topic Title", "desc": "Concrete study guidance." }
   ],
-  "recommendedTopics": [
-    "High-impact topic or exercise to master next"
-  ],
-  "nextSteps": "High-level executive assessment and next recommended career milestone."
+  "recommendations": ["..."]
 }
 `;
 
-    const result = await callGeminiWithRetry(prompt);
-    const overallScore = Math.min(100, Math.max(0, parseInt(result.overallScore, 10) || 70));
-    const rawCategoryScores = result.categoryScores || {};
-    const sanitizedCatScores = {};
-    Object.keys(rawCategoryScores).forEach((k) => {
-      sanitizedCatScores[k] = Math.min(100, Math.max(0, parseInt(rawCategoryScores[k], 10) || overallScore));
-    });
+    let synthesis = null;
+    try {
+      synthesis = await callGeminiWithRetry(synthesisPrompt);
+    } catch (synthErr) {
+      console.warn('[Gemini Service] Synthesis fallback:', synthErr.message);
+      synthesis = {
+        executiveSummary: `Candidate completed ${answeredCount} of ${N} questions for ${jobRole} with an overall weighted score of ${finalOverallScore}%.`,
+        strengths: evaluatedQuestions.filter((q) => q.score >= 70).flatMap((q) => q.strengths).slice(0, 4),
+        weaknesses: evaluatedQuestions.filter((q) => q.score < 60).flatMap((q) => q.weaknesses).slice(0, 4),
+        missedConcepts: Array.from(new Set(evaluatedQuestions.flatMap((q) => q.missingConcepts || []))).slice(0, 6),
+        improvementPlan: [
+          { title: `Core ${jobRole} Fundamentals`, desc: 'Review key architecture patterns and practice problem solving under timed conditions.' }
+        ],
+        recommendations: ['Review questions with lower scores in the detailed accordion below.']
+      };
+    }
+
+    // Contradiction guards
+    let reportStrengths = Array.isArray(synthesis?.strengths) ? synthesis.strengths : [];
+    let reportWeaknesses = Array.isArray(synthesis?.weaknesses) ? synthesis.weaknesses : [];
+
+    if (finalOverallScore < 35 || techAvg < 25) {
+      reportStrengths = reportStrengths.filter((s) => {
+        const lower = s.toLowerCase();
+        return !lower.includes('strong') && !lower.includes('deep') && !lower.includes('mastery') && !lower.includes('excellent');
+      });
+      if (finalOverallScore < 20) {
+        reportStrengths = [];
+      }
+    }
+
+    if (skippedCount > 0 && !reportWeaknesses.some((w) => w.toLowerCase().includes('skip'))) {
+      reportWeaknesses.unshift(`Candidate skipped ${skippedCount} of ${N} questions, which significantly reduced the overall score.`);
+    }
 
     return {
-      overallScore,
+      overallScore: finalOverallScore,
+      isInsufficientData: isPartial,
+      status: 'completed',
       category,
       categoryLabel: categoryMeta.label,
-      categoryScores: sanitizedCatScores,
-      strengths: Array.isArray(result.strengths) ? result.strengths : [],
-      weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : [],
-      missedConcepts: Array.isArray(result.missedConcepts) ? result.missedConcepts : [],
-      improvementPlan: Array.isArray(result.improvementPlan) ? result.improvementPlan : [],
-      recommendedTopics: Array.isArray(result.recommendedTopics) ? result.recommendedTopics : [],
-      nextSteps: result.nextSteps || 'Review the suggested learning topics and practice mock interviews.',
+      categoryScores,
+      weights: EVALUATION_WEIGHTS,
+      scoreCalculationExplanation: `Weighted calculation: (${techAvg} * 0.30) + (${probAvg} * 0.25) + (${commAvg} * 0.20) + (${compAvg} * 0.15) + (${practAvg} * 0.10) = ${finalOverallScore}/100.`,
+      executiveSummary: synthesis?.executiveSummary || `Candidate completed ${answeredCount} of ${N} questions with a score of ${finalOverallScore}%.`,
+      strengths: reportStrengths,
+      keyStrengths: reportStrengths,
+      weaknesses: reportWeaknesses,
+      areasForImprovement: reportWeaknesses,
+      missedConcepts: Array.isArray(synthesis?.missedConcepts) ? synthesis.missedConcepts : [],
+      improvementPlan: Array.isArray(synthesis?.improvementPlan) ? synthesis.improvementPlan : [],
+      recommendations: Array.isArray(synthesis?.recommendations) ? synthesis.recommendations : [],
+      questionEvaluations: evaluatedQuestions,
+      answeredCount,
+      skippedCount,
+      totalQuestions: N,
     };
   } catch (error) {
     console.error('[Gemini Service] generateInterviewReport Error:', error.message);
@@ -1384,6 +1702,8 @@ Return ONLY a valid JSON object with this EXACT schema:
 };
 
 module.exports = {
+  EVALUATION_WEIGHTS,
+  calculateWeightedScore,
   generateInterviewQuestions,
   evaluateInterviewAnswer,
   generateFollowUpQuestion,

@@ -6,6 +6,24 @@ const { v4: uuidv4 } = require('uuid');
 // In-memory session store providing resilient fallback when Cloud Firestore is pending provisioning
 const inMemoryInterviews = new Map();
 
+/**
+ * Deep sanitization for Firestore: converts undefined to null or omits, avoiding Firestore exceptions
+ */
+const sanitizeForFirestore = (obj) => {
+  if (obj === undefined) return null;
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeForFirestore);
+  }
+  const clean = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      clean[key] = sanitizeForFirestore(value);
+    }
+  }
+  return clean;
+};
+
 const getSession = async (interviewId) => {
   if (inMemoryInterviews.has(interviewId)) {
     const memoryData = inMemoryInterviews.get(interviewId);
@@ -29,13 +47,14 @@ const getSession = async (interviewId) => {
 };
 
 const saveSession = async (interviewId, updates) => {
+  const cleanUpdates = sanitizeForFirestore(updates);
   if (inMemoryInterviews.has(interviewId)) {
-    Object.assign(inMemoryInterviews.get(interviewId), updates);
+    Object.assign(inMemoryInterviews.get(interviewId), cleanUpdates);
   } else {
-    inMemoryInterviews.set(interviewId, updates);
+    inMemoryInterviews.set(interviewId, cleanUpdates);
   }
   try {
-    await db.collection('interviews').doc(interviewId).set(updates, { merge: true });
+    await db.collection('interviews').doc(interviewId).set(cleanUpdates, { merge: true });
   } catch (fsErr) {
     console.warn('[Firestore saveSession Notice]:', fsErr.message);
   }
@@ -122,12 +141,13 @@ const generateQuestions = async (req, res, next) => {
     };
 
     // Cache session in-memory immediately for zero-latency retrieval
-    inMemoryInterviews.set(interviewId, interviewData);
+    const cleanInterviewData = sanitizeForFirestore(interviewData);
+    inMemoryInterviews.set(interviewId, cleanInterviewData);
 
     // Persist to Cloud Firestore
     const tFsStart = performance.now();
     try {
-      await db.collection('interviews').doc(interviewId).set(interviewData);
+      await db.collection('interviews').doc(interviewId).set(cleanInterviewData);
     } catch (fsErr) {
       console.warn('[Firestore Write Warning]:', fsErr.message);
     }
@@ -420,15 +440,23 @@ const completeInterview = async (req, res, next) => {
     } catch (reportErr) {
       console.warn('[completeInterview] Report generation fallback:', reportErr.message);
       const computedScore = validScoreCount > 0 ? Math.round(scoreSum / questions.length) : 0;
+      const isInsufficient = answeredCount === 0 || computedScore === 0;
       report = {
         overallScore: computedScore,
-        technicalAccuracy: computedScore,
-        communicationClarity: computedScore,
-        completeness: computedScore,
-        executiveSummary: `Completed ${answeredCount} of ${questions.length} questions for ${interview.jobRole}.`,
-        keyStrengths: ['Demonstrated understanding of core concepts'],
-        areasForImprovement: ['Continue practicing complex edge-case questions'],
-        recommendations: ['Review targeted study roadmap modules on dashboard'],
+        categoryScores: {
+          technicalAccuracy: computedScore,
+          problemSolving: computedScore,
+          communication: computedScore,
+          completeness: computedScore,
+          practicalKnowledge: computedScore,
+        },
+        executiveSummary: isInsufficient
+          ? `Interview session incomplete. ${skippedCount} of ${questions.length} questions were skipped. Insufficient data to evaluate competency.`
+          : `Completed ${answeredCount} of ${questions.length} questions for ${interview.jobRole}.`,
+        keyStrengths: computedScore >= 60 ? ['Demonstrated understanding of core concepts'] : [],
+        areasForImprovement: ['Continue practicing technical depth, edge cases, and complete structured answers.'],
+        recommendations: ['Review targeted study roadmap modules on dashboard and complete full mock interviews.'],
+        isInsufficientData: isInsufficient,
       };
     }
 
@@ -436,8 +464,10 @@ const completeInterview = async (req, res, next) => {
       ? report.overallScore
       : (validScoreCount > 0 ? Math.round(scoreSum / questions.length) : 0);
 
+    const isInsufficientData = Boolean(report.isInsufficientData || (answeredCount === 0 && skippedCount > 0));
+
     const completedAt = new Date().toISOString();
-    const updatePayload = {
+    const updatePayload = sanitizeForFirestore({
       interviewId,
       id: interviewId,
       userId,
@@ -450,15 +480,18 @@ const completeInterview = async (req, res, next) => {
       questions,
       answers: mergedAnswers,
       evaluations: mergedEvaluations,
+      questionEvaluations: report.questionEvaluations || mergedEvaluations,
       overallScore: finalOverallScore,
+      categoryScores: report.categoryScores || {},
       answeredCount,
       skippedCount,
+      isInsufficientData,
       status: 'completed',
       report,
       createdAt: interview.createdAt || completedAt,
       completedAt,
       updatedAt: completedAt,
-    };
+    });
 
     // Save directly to Firestore with confirmed write
     await db.collection('interviews').doc(interviewId).set(updatePayload, { merge: true });

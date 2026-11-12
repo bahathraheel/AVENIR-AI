@@ -955,15 +955,22 @@ solve();
       const skippedEval = {
         score: 0,
         overallScore: 0,
-        feedback: 'Question was skipped by candidate.',
+        status: 'SKIPPED',
+        technicalCorrectness: 0,
+        completeness: 0,
+        feedback: 'Question was skipped by candidate. 0/100 marks awarded.',
+        marksJustification: 'Candidate skipped this question. 0 points awarded across all evaluation criteria.',
         categoryScores: {
-          metric1: 0,
-          metric2: 0,
-          metric3: 0,
-          metric4: 0
+          technicalAccuracy: 0,
+          problemSolving: 0,
+          communication: 0,
+          completeness: 0,
+          practicalKnowledge: 0
         },
-        strengths: ['Question was skipped by candidate.'],
-        weaknesses: ['Did not provide an answer. Practice responding to questions in this category.']
+        strengths: [],
+        weaknesses: ['Question was skipped without an answer.'],
+        missingConcepts: ['All required concepts missed due to skipped question.'],
+        correctlyExplained: []
       };
       state.evaluations[state.currentQuestionIndex] = skippedEval;
 
@@ -1271,10 +1278,22 @@ solve();
         state.evaluations[i] = {
           score: 0,
           overallScore: 0,
-          feedback: 'Question was skipped by candidate.',
-          categoryScores: { metric1: 0, metric2: 0, metric3: 0, metric4: 0 },
-          strengths: ['Question was skipped.'],
-          weaknesses: ['Question was skipped without an answer.']
+          status: 'SKIPPED',
+          technicalCorrectness: 0,
+          completeness: 0,
+          feedback: 'Question was skipped by candidate. 0/100 marks awarded.',
+          marksJustification: 'Candidate skipped this question. 0 points awarded across all evaluation criteria.',
+          categoryScores: {
+            technicalAccuracy: 0,
+            problemSolving: 0,
+            communication: 0,
+            completeness: 0,
+            practicalKnowledge: 0
+          },
+          strengths: [],
+          weaknesses: ['Question was skipped without an answer.'],
+          missingConcepts: ['All required concepts missed due to skipped question.'],
+          correctlyExplained: []
         };
       }
     }

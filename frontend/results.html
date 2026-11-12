@@ -140,50 +140,61 @@
 
         <!-- Category Score Breakdown -->
         <section class="score-breakdown-section">
-          <h3 class="section-subheading">Performance Breakdown</h3>
+          <h3 class="section-subheading">Weighted Category Breakdown</h3>
           <div class="score-breakdown" id="categoryBreakdownGrid">
             <div class="score-breakdown-card">
               <div class="card-top">
-                <span class="breakdown-category">Technical Accuracy</span>
-                <span class="breakdown-score" id="scoreTech">90%</span>
+                <span class="breakdown-category">Technical Accuracy <small style="font-weight: 500; color: #6B7280;">(30%)</small></span>
+                <span class="breakdown-score" id="scoreTech">--%</span>
               </div>
               <div class="progress-track">
-                <div class="progress-fill" style="width: 90%;"></div>
+                <div class="progress-fill" style="width: 0%;"></div>
               </div>
-              <p class="breakdown-note">Sound grasp of language fundamentals and algorithmic logic.</p>
+              <p class="breakdown-note">Correctness of syntax, algorithms, logic, and technical precision.</p>
             </div>
 
             <div class="score-breakdown-card">
               <div class="card-top">
-                <span class="breakdown-category">Communication & Clarity</span>
-                <span class="breakdown-score" id="scoreComm">85%</span>
+                <span class="breakdown-category">Problem Solving & Logic <small style="font-weight: 500; color: #6B7280;">(25%)</small></span>
+                <span class="breakdown-score" id="scoreProblem">--%</span>
               </div>
               <div class="progress-track">
-                <div class="progress-fill" style="width: 85%;"></div>
+                <div class="progress-fill" style="width: 0%;"></div>
               </div>
-              <p class="breakdown-note">Well-structured answers with clear progression of ideas.</p>
+              <p class="breakdown-note">Structured reasoning, edge cases, trade-offs, and analytical depth.</p>
             </div>
 
             <div class="score-breakdown-card">
               <div class="card-top">
-                <span class="breakdown-category">Problem-Solving</span>
-                <span class="breakdown-score" id="scoreProblem">88%</span>
+                <span class="breakdown-category">Communication & Clarity <small style="font-weight: 500; color: #6B7280;">(20%)</small></span>
+                <span class="breakdown-score" id="scoreComm">--%</span>
               </div>
               <div class="progress-track">
-                <div class="progress-fill" style="width: 88%;"></div>
+                <div class="progress-fill" style="width: 0%;"></div>
               </div>
-              <p class="breakdown-note">Proactively considered edge cases and trade-offs.</p>
+              <p class="breakdown-note">Structured explanations, clear progression, and terminology precision.</p>
             </div>
 
             <div class="score-breakdown-card">
               <div class="card-top">
-                <span class="breakdown-category">Structure & Brevity</span>
-                <span class="breakdown-score" id="scoreStructure">82%</span>
+                <span class="breakdown-category">Completeness & Depth <small style="font-weight: 500; color: #6B7280;">(15%)</small></span>
+                <span class="breakdown-score" id="scoreComp">--%</span>
               </div>
               <div class="progress-track">
-                <div class="progress-fill" style="width: 82%;"></div>
+                <div class="progress-fill" style="width: 0%;"></div>
               </div>
-              <p class="breakdown-note">Responses were focused with minimal unnecessary digressions.</p>
+              <p class="breakdown-note">Thorough answers addressing all sub-points and key dependencies.</p>
+            </div>
+
+            <div class="score-breakdown-card">
+              <div class="card-top">
+                <span class="breakdown-category">Practical Knowledge <small style="font-weight: 500; color: #6B7280;">(10%)</small></span>
+                <span class="breakdown-score" id="scorePract">--%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 0%;"></div>
+              </div>
+              <p class="breakdown-note">Real-world production tooling, best practices, and maintainability.</p>
             </div>
           </div>
         </section>

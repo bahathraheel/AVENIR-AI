@@ -3,9 +3,11 @@
  * Provides unified, authenticated HTTP request helpers for all backend endpoints.
  */
 
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:5000' 
-  : 'YOUR_BACKEND_URL'; // Replace with actual backend URL after deployment
+const API_BASE_URL =
+    (window.location.hostname === 'localhost' ||
+     window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000'
+        : 'https://avenir-ai-49xw.onrender.com';// Replace with actual backend URL after deployment
 
 /**
  * Universal Toast Notification System

@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.vercel/
+.firebase/
+*serviceAccount*.json
+*firebase-adminsdk*.json
+*.pem
+*.key
+profile_*.png
+test_edge.png
+test-data/

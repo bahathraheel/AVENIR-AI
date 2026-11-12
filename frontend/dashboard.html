@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Dashboard - Monitor your interview readiness, recent mock interviews, score breakdown, and personalized improvement roadmap.">
+  <title>Dashboard - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar / Header -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="top-bar-right">
+          <a href="interview-setup.html" class="btn btn-primary btn-sm">
+            <i data-lucide="play-circle"></i>
+            <span>New Interview</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <div class="header-titles">
+          <h1 class="page-title">Welcome back, <span id="userNameDisplay">Interviewee</span>!</h1>
+          <p class="page-subtitle">Track your progress and prepare for your next career opportunity.</p>
+        </div>
+      </header>
+
+      <!-- Welcome Banner for new / active users -->
+      <section class="dashboard-welcome" id="dashboardWelcomeBanner">
+        <div class="welcome-card-content">
+          <div class="welcome-icon-box">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <div class="welcome-text-group">
+            <h2 class="welcome-heading">Welcome to AVENIR AI</h2>
+            <p class="welcome-desc">Your personal AI-powered interview preparation assistant.</p>
+          </div>
+        </div>
+        <div class="welcome-action">
+          <a href="interview-setup.html" class="btn btn-primary" id="welcomeStartBtn">
+            <span>Start Your First Interview</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- Stats Grid (4 cards with IDs for JS population) -->
+      <section class="stats-grid" aria-label="Interview Statistics">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-orange">
+            <i data-lucide="messages-square"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Interviews</span>
+            <span class="stat-value" id="statTotalInterviews">0</span>
+            <span class="stat-subtext" id="statTotalSubtext">0 this month</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-neutral">
+            <i data-lucide="chart-no-axes-combined"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Average Score</span>
+            <span class="stat-value" id="statAvgScore">0%</span>
+            <span class="stat-subtext" id="statAvgSubtext">Across all sessions</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-orange">
+            <i data-lucide="trophy"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Highest Score</span>
+            <span class="stat-value" id="statHighestScore">0%</span>
+            <span class="stat-subtext" id="statHighestSubtext">Personal best</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-green">
+            <i data-lucide="circle-check"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Completed Interviews</span>
+            <span class="stat-value" id="statCompletedInterviews">0</span>
+            <span class="stat-subtext" id="statCompletedSubtext">Fully evaluated</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Grid Panels -->
+      <section class="dashboard-grid">
+        <!-- Panel 1: Recent Interviews -->
+        <div class="dashboard-panel panel-recent">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="history" class="panel-icon"></i>
+              <h3 class="panel-title">Recent Interviews</h3>
+            </div>
+            <a href="history.html" class="panel-action-link">View All</a>
+          </div>
+
+          <div class="panel-body">
+            <!-- Populated dynamically by js/dashboard.js -->
+            <div class="recent-interviews-list" id="recentInterviewsList">
+              <!-- Empty state default -->
+              <div class="empty-state" id="recentInterviewsEmpty">
+                <i data-lucide="file-text" class="empty-icon"></i>
+                <h4 class="empty-title">No interviews yet</h4>
+                <p class="empty-desc">Complete your first mock interview to see your history and scores here.</p>
+                <a href="interview-setup.html" class="btn btn-secondary btn-sm">Start an Interview</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Performance Overview -->
+        <div class="dashboard-panel panel-chart">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="bar-chart-3" class="panel-icon"></i>
+              <h3 class="panel-title">Performance Overview</h3>
+            </div>
+            <a href="analytics.html" class="panel-action-link">Full Analytics</a>
+          </div>
+
+          <div class="panel-body">
+            <!-- Chart Container for JS chart -->
+            <div class="chart-container" id="performanceChartContainer">
+              <canvas id="performanceChart" width="400" height="220" aria-label="Performance trend chart" role="img"></canvas>
+              <div class="chart-fallback hidden" id="chartFallback">
+                <p class="fallback-text">Take at least 2 interviews to visualize your score progression.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Quick Actions -->
+        <div class="dashboard-panel panel-actions">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="rocket" class="panel-icon"></i>
+              <h3 class="panel-title">Quick Actions</h3>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="quick-actions-grid">
+              <a href="interview-setup.html" class="quick-action-card">
+                <div class="action-icon action-orange">
+                  <i data-lucide="play-circle"></i>
+                </div>
+                <div class="action-details">
+                  <span class="action-name">Start Mock Interview</span>
+                  <span class="action-meta">Technical, HR & Coding</span>
+                </div>
+                <i data-lucide="arrow-right" class="action-arrow"></i>
+              </a>
+
+              <a href="resume-analyzer.html" class="quick-action-card">
+                <div class="action-icon action-blue">
+                  <i data-lucide="file-search"></i>
+                </div>
+                <div class="action-details">
+                  <span class="action-name">Resume Analysis</span>
+                  <span class="action-meta">ATS Score & Skill Matching</span>
+                </div>
+                <i data-lucide="arrow-right" class="action-arrow"></i>
+              </a>
+
+              <a href="analytics.html" class="quick-action-card">
+                <div class="action-icon action-green">
+                  <i data-lucide="bar-chart-3"></i>
+                </div>
+                <div class="action-details">
+                  <span class="action-name">View Analytics</span>
+                  <span class="action-meta">Strengths & Trends</span>
+                </div>
+                <i data-lucide="arrow-right" class="action-arrow"></i>
+              </a>
+
+              <a href="learning.html" class="quick-action-card">
+                <div class="action-icon action-purple">
+                  <i data-lucide="book-open"></i>
+                </div>
+                <div class="action-details">
+                  <span class="action-name">Learning Roadmaps</span>
+                  <span class="action-meta">Personalized Study Topics</span>
+                </div>
+                <i data-lucide="arrow-right" class="action-arrow"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 4: Weekly Progress -->
+        <div class="dashboard-panel panel-progress">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="target" class="panel-icon"></i>
+              <h3 class="panel-title">Weekly Progress</h3>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="weekly-progress-box" id="weeklyProgressInfo">
+              <div class="progress-stats-row">
+                <span class="progress-title">Interviews Goal</span>
+                <span class="progress-fraction" id="weeklyProgressFraction">0 / 5</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="weeklyProgressBar" style="width: 0%;"></div>
+              </div>
+              <div class="weekly-days-grid" id="weeklyDaysGrid">
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">MON</span></div>
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">TUE</span></div>
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">WED</span></div>
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">THU</span></div>
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">FRI</span></div>
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">SAT</span></div>
+                <div class="day-dot"><div class="dot-indicator"></div><span class="day-label">SUN</span></div>
+              </div>
+              <p class="weekly-tip" id="weeklyTip">Practice consistently to build confidence and reduce anxiety.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 5: Daily Technical Challenge -->
+        <div class="dashboard-panel panel-daily-challenge">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="code-2" class="panel-icon icon-orange"></i>
+              <h3 class="panel-title">Daily Technical Challenge</h3>
+            </div>
+            <span class="badge badge-primary" id="dailyChallengeDifficulty">Medium</span>
+          </div>
+
+          <div class="panel-body">
+            <div class="daily-challenge-card" id="dailyChallengeCard">
+              <h4 class="challenge-title" id="dailyChallengeTitle">Loading daily problem...</h4>
+              <div class="challenge-tags" id="dailyChallengeTags">
+                <span class="tag">Algorithms</span>
+                <span class="tag">Problem Solving</span>
+              </div>
+              <div class="challenge-actions">
+                <a href="https://leetcode.com" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" id="solveChallengeBtn">
+                  <i data-lucide="external-link"></i>
+                  <span>View Problem</span>
+                </a>
+                <a href="interview-setup.html" class="btn btn-primary btn-sm">
+                  <i data-lucide="play"></i>
+                  <span>Practice with AI</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 6: Live Career Opportunities -->
+        <div class="dashboard-panel panel-jobs">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="briefcase" class="panel-icon icon-blue"></i>
+              <h3 class="panel-title">Live Career Opportunities</h3>
+            </div>
+            <a href="learning.html" class="panel-action">Explore All</a>
+          </div>
+
+          <div class="panel-body">
+            <div class="jobs-list" id="dashboardJobsList">
+              <div class="job-item-placeholder" style="padding: 16px; text-align: center; color: var(--text-secondary);">
+                <span>Loading active tech opportunities...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+
+  <!-- Mobile Sidebar & UI helper -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      function openSidebar() {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      }
+
+      function closeSidebar() {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      }
+
+      if (toggle) toggle.addEventListener('click', openSidebar);
+      if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+      if (backdrop) backdrop.addEventListener('click', closeSidebar);
+    });
+  </script>
+</body>
+</html>

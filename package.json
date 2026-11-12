@@ -1,0 +1,15 @@
+{
+  "name": "avenir-ai",
+  "version": "1.0.0",
+  "description": "AVENIR AI - Your Future Starts Here.",
+  "scripts": {
+    "start:backend": "cd backend && node server.js",
+    "dev:backend": "cd backend && npm run dev",
+    "start:frontend": "node frontend/serve.js",
+    "start": "node run.js",
+    "test": "cd backend && npm test"
+  },
+  "author": "AVENIR AI",
+  "license": "ISC"
+}
+

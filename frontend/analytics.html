@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Performance Analytics - Track score progression, category mastery, difficulty breakdowns, and weak area trends over time.">
+  <title>Performance Analytics - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item active">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Performance Analytics</span>
+                      </div>
+      </div>
+
+      <!-- Page Header with Filter Buttons -->
+      <header class="page-header header-with-actions">
+        <div class="header-titles">
+          <h1 class="page-title">Performance Analytics</h1>
+          <p class="page-subtitle">Understand trends, technical competency shifts, and readiness benchmarks.</p>
+        </div>
+
+        <div class="filter-btn-group" role="group" aria-label="Time period filters">
+          <button type="button" class="filter-btn active" data-period="all">All Time</button>
+          <button type="button" class="filter-btn" data-period="monthly">Monthly</button>
+          <button type="button" class="filter-btn" data-period="weekly">Weekly</button>
+        </div>
+      </header>
+
+      <!-- Stats Grid (Summary Cards) -->
+      <section class="stats-grid" aria-label="Performance Summary">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-orange">
+            <i data-lucide="clock"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Practice Time</span>
+            <span class="stat-value" id="statPracticeTime">0 mins</span>
+            <span class="stat-subtext" id="statPracticeTimeSub">Calculating practice time...</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-blue">
+            <i data-lucide="award"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Avg Technical Score</span>
+            <span class="stat-value" id="statTechScore">0%</span>
+            <span class="stat-subtext" id="statTechScoreSub">Calculating average...</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-green">
+            <i data-lucide="check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Completion Rate</span>
+            <span class="stat-value" id="statCompletionRate">0%</span>
+            <span class="stat-subtext" id="statCompletionRateSub">Calculating rate...</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper icon-purple">
+            <i data-lucide="target"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Mock Sessions</span>
+            <span class="stat-value" id="statTotalSessions">0</span>
+            <span class="stat-subtext" id="statTotalSessionsSub">0 sessions</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Additional Analytics Key Insights Row -->
+      <section class="analytics-insights-grid" id="analyticsInsightsSection" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="insight-badge-card" style="background: #FFFFFF; border: 1.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 18px 20px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm);">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #ECFDF5; color: #10B981; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="crown"></i>
+          </div>
+          <div>
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted);">Strongest Category</span>
+            <h4 id="insightStrongest" style="margin: 3px 0 0 0; font-size: 14px; font-weight: 700; color: var(--color-text);">Loading insights...</h4>
+          </div>
+        </div>
+
+        <div class="insight-badge-card" style="background: #FFFFFF; border: 1.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 18px 20px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm);">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #FFFBEB; color: #F59E0B; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="crosshair"></i>
+          </div>
+          <div>
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted);">Focus / Weakest Category</span>
+            <h4 id="insightWeakest" style="margin: 3px 0 0 0; font-size: 14px; font-weight: 700; color: var(--color-text);">Loading insights...</h4>
+          </div>
+        </div>
+
+        <div class="insight-badge-card" style="background: #FFFFFF; border: 1.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 18px 20px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm);">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div>
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted);">Recent Score Delta</span>
+            <h4 id="insightImprovement" style="margin: 3px 0 0 0; font-size: 14px; font-weight: 700; color: var(--color-text);">0%</h4>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Charts Section -->
+      <section class="analytics-charts">
+        <!-- Score Trend Chart -->
+        <div class="dashboard-panel chart-panel" id="scoreTrendChartContainer">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="trending-up" class="panel-icon" style="color: var(--color-primary, #FF5841);"></i>
+              <h3 class="panel-title">Score Progression Trend</h3>
+            </div>
+            <span class="panel-badge" style="background: var(--color-primary-light); color: var(--color-primary); font-weight: 700;">Score Progression</span>
+          </div>
+          <div class="panel-body">
+            <div class="canvas-container">
+              <canvas id="trendChart" width="500" height="260" aria-label="Historical score progression chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance by Category Chart -->
+        <div class="dashboard-panel chart-panel" id="categoryChartContainer">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="bar-chart-3" class="panel-icon" style="color: var(--color-secondary, #C53678);"></i>
+              <h3 class="panel-title">Performance by Category</h3>
+            </div>
+            <span class="panel-badge" style="background: var(--color-secondary-light); color: var(--color-secondary); font-weight: 700;">5 Categories</span>
+          </div>
+          <div class="panel-body">
+            <div class="canvas-container">
+              <canvas id="categoryChart" width="500" height="260" aria-label="Performance by category chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance by Difficulty Chart -->
+        <div class="dashboard-panel chart-panel" id="difficultyChartContainer">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="layers" class="panel-icon" style="color: #10B981;"></i>
+              <h3 class="panel-title">Scores by Difficulty Level</h3>
+            </div>
+            <span class="panel-badge">Easy vs Med vs Hard</span>
+          </div>
+          <div class="panel-body">
+            <div class="canvas-container">
+              <canvas id="difficultyChart" width="500" height="260" aria-label="Scores by difficulty level chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly/Monthly Progress Chart -->
+        <div class="dashboard-panel chart-panel" id="progressChartContainer">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="activity" class="panel-icon" style="color: var(--color-primary, #FF5841);"></i>
+              <h3 class="panel-title">Practice Volume Over Time</h3>
+            </div>
+            <span class="panel-badge">Sessions & Questions</span>
+          </div>
+          <div class="panel-body">
+            <div class="canvas-container">
+              <canvas id="progressChart" width="500" height="260" aria-label="Interview volume chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Details Table & Improvement Areas -->
+      <section class="analytics-details">
+        <!-- Category Breakdown Table -->
+        <div class="dashboard-panel panel-table">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="list" class="panel-icon" style="color: var(--color-primary, #FF5841);"></i>
+              <h3 class="panel-title">Category Breakdown</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive">
+              <table class="data-table" id="categoryBreakdownTable">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Attempts</th>
+                    <th>Avg Score</th>
+                    <th>Highest Score</th>
+                    <th>Trend</th>
+                  </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: var(--color-text-muted); padding: 24px;">Loading category records...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Targeted Improvement Areas -->
+        <div class="dashboard-panel panel-improvements">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="target" class="panel-icon" style="color: var(--color-secondary, #C53678);"></i>
+              <h3 class="panel-title">Targeted Improvement Areas</h3>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="improvements-list" id="improvementAreasList">
+              <div style="padding: 20px; text-align: center; color: var(--color-text-muted);">Loading focus areas...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty State Container for users with 0 interviews -->
+      <section class="empty-state-card hidden" id="analyticsEmptyState">
+        <i data-lucide="bar-chart" class="empty-state-icon"></i>
+        <h3 class="empty-title">No Performance Data Yet</h3>
+        <p class="empty-desc">Take your first mock interview to generate in-depth analytics, trend metrics, and category benchmarks.</p>
+        <a href="interview-setup.html" class="btn btn-primary">Start Your First Interview</a>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/analytics.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

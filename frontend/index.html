@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI - Your Future Starts Here. Prepare smarter, speak confidently, and achieve your career goals with personalized AI-powered mock interviews.">
+  <meta name="keywords" content="AVENIR AI, AI interview, mock interview, career preparation, resume analyzer, Gemini AI">
+  <title>AVENIR AI - Your Future Starts Here</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Single Unified Header & Navigation Bar -->
+  <header class="navbar-header">
+    <nav class="navbar" aria-label="Main Navigation">
+      <!-- LEFT: AVENIR AI Logo -->
+      <a href="index.html" class="nav-logo" aria-label="AVENIR AI Home">
+        <span class="logo-brand">AVENIR</span><span class="logo-ai">AI</span>
+        <i data-lucide="sparkles" class="logo-sparkle"></i>
+      </a>
+
+      <!-- CENTER: Navigation Links (Desktop) -->
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link active">Home</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+      </ul>
+
+      <!-- RIGHT: Action Buttons (Desktop) -->
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-signin">Sign In</a>
+        <a href="register.html" class="btn btn-getstarted">Get Started</a>
+      </div>
+
+      <!-- Hamburger Button (Mobile Only) -->
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+        <i data-lucide="menu" id="menuIcon"></i>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Mobile Drawer Menu (Hidden by default, shown on mobile toggle) -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="#" class="nav-link mobile-link active">Home</a>
+    <a href="#features" class="nav-link mobile-link">Features</a>
+    <a href="#how-it-works" class="nav-link mobile-link">How It Works</a>
+    <a href="#about" class="nav-link mobile-link">About</a>
+    <div class="mobile-drawer-actions">
+      <a href="login.html" class="btn btn-secondary">Sign In</a>
+      <a href="register.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-container">
+      <!-- Hero Left: Content -->
+      <div class="hero-content">
+        <div class="hero-badge">
+          <i data-lucide="sparkles"></i>
+          <span>AI-Powered Interview Preparation</span>
+        </div>
+        <h1 class="hero-title">Your <span class="highlight">Future</span> Starts Here.</h1>
+        <p class="hero-subtitle">Practice smarter, build confidence, and prepare for your dream career with personalized AI-powered mock interviews.</p>
+        <div class="hero-buttons">
+          <a href="register.html" class="btn btn-primary btn-lg">
+            <span>Start Your Journey</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+          <a href="#features" class="btn btn-secondary btn-lg">
+            <span>Explore Features</span>
+          </a>
+        </div>
+        <div class="hero-trust">
+          <i data-lucide="shield-check"></i>
+          <span>Your personal AI-powered career preparation companion.</span>
+        </div>
+      </div>
+
+      <!-- Hero Right: High-Fidelity SaaS AI Interview Preview UI -->
+      <div class="hero-preview" aria-hidden="true">
+        <div class="mockup-window">
+          <!-- Window Header -->
+          <div class="mockup-header">
+            <div class="window-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="mockup-title">AVENIR AI - Live Interview Session</div>
+            <div class="mockup-live-status">
+              <span class="live-pulse"></span>
+              <span>Live Interviewer</span>
+            </div>
+          </div>
+
+          <!-- Window Content -->
+          <div class="mockup-body">
+            <!-- Question Box -->
+            <div class="mockup-question-box">
+              <div class="question-meta">
+                <span class="role-tag">Senior Full Stack Developer</span>
+                <span class="question-counter">Question 3 of 10</span>
+              </div>
+              <p class="question-text">"Explain how you would design a distributed caching layer with Redis to prevent cache stampedes under high concurrency."</p>
+            </div>
+
+            <!-- Candidate Answer Simulated Box -->
+            <div class="mockup-answer-box">
+              <div class="answer-header">
+                <span class="candidate-tag">
+                  <i data-lucide="mic" style="width:14px;height:14px;color:var(--color-primary,#FF5841);"></i>
+                  <span>Voice Transcription (Candidate)</span>
+                </span>
+                <div class="audio-bars">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+              <p class="answer-text">"I would employ a mutex lock with probabilistic early recomputation (XFetch algorithm) combined with Redis cluster sharding..."</p>
+            </div>
+
+            <!-- Instant Score & Category Feedback -->
+            <div class="mockup-score-bar">
+              <div class="score-display">
+                <div class="score-number">94</div>
+                <div class="score-info">
+                  <span class="score-label">Evaluation Score</span>
+                  <span class="score-status">Excellent Readiness</span>
+                </div>
+              </div>
+              <div class="score-pills">
+                <span class="score-pill">Technical: 96%</span>
+                <span class="score-pill">Clarity: 92%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Badge -->
+        <div class="floating-badge">
+          <i data-lucide="sparkles"></i>
+          <span>Gemini 2.0 AI Evaluation Active</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">Capabilities</span>
+        <h2 class="section-title">Everything You Need to Ace Your Interview</h2>
+        <p class="section-subtitle">One intelligent platform to prepare, practice, and improve.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <article class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="messages-square"></i>
+          </div>
+          <h3 class="feature-title">AI Mock Interviews</h3>
+          <p class="feature-desc">Practice with role-specific AI interviewers tailored to your experience level and desired industry role.</p>
+        </article>
+
+        <!-- Feature 2 -->
+        <article class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="circle-check"></i>
+          </div>
+          <h3 class="feature-title">Smart Answer Evaluation</h3>
+          <p class="feature-desc">Receive immediate, detailed scoring on technical accuracy, clarity, problem-solving, and communication.</p>
+        </article>
+
+        <!-- Feature 3 -->
+        <article class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="file-user"></i>
+          </div>
+          <h3 class="feature-title">Resume Analyzer</h3>
+          <p class="feature-desc">Upload your PDF or DOCX resume to get ATS compatibility analysis, keyword coverage, and missing skills detection.</p>
+        </article>
+
+        <!-- Feature 4 -->
+        <article class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="chart-no-axes-combined"></i>
+          </div>
+          <h3 class="feature-title">Performance Analytics</h3>
+          <p class="feature-desc">Monitor your improvement over time with clean trend charts, category breakdowns, and score progressions.</p>
+        </article>
+
+        <!-- Feature 5 -->
+        <article class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <h3 class="feature-title">Personalized Learning</h3>
+          <p class="feature-desc">Generate tailored roadmaps focusing specifically on the weak areas identified during your live mock interviews.</p>
+        </article>
+
+        <!-- Feature 6 -->
+        <article class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="history"></i>
+          </div>
+          <h3 class="feature-title">Interview History</h3>
+          <p class="feature-desc">Review your past sessions, track your question evaluations, and export comprehensive branded PDF reports.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">Workflow</span>
+        <h2 class="section-title">Your Journey to Interview Success</h2>
+        <p class="section-subtitle">Four structured steps designed to turn interview anxiety into confidence.</p>
+      </div>
+
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card">
+          <span class="step-number">01</span>
+          <h3 class="step-title">Choose Your Career</h3>
+          <p class="step-desc">Select your target job role from 12+ domains and customize your interview category and difficulty.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card">
+          <span class="step-number">02</span>
+          <h3 class="step-title">Start AI Interview</h3>
+          <p class="step-desc">Google Gemini AI generates real-world questions and conducts an interactive session via text or voice.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card">
+          <span class="step-number">03</span>
+          <h3 class="step-title">Receive Instant Feedback</h3>
+          <p class="step-desc">AI evaluates each answer across 6 core criteria, identifying strengths, weaknesses, and model answers.</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card">
+          <span class="step-number">04</span>
+          <h3 class="step-title">Track Your Progress</h3>
+          <p class="step-desc">Review comprehensive reports, master weak topics with customized study plans, and download PDF summaries.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose AVENIR AI / Benefits -->
+  <section class="benefits" id="about">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">Why AVENIR AI</span>
+        <h2 class="section-title">Engineered for Career Excellence</h2>
+        <p class="section-subtitle">The smarter, faster, and more effective way to prepare for competitive job opportunities.</p>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon-box"><i data-lucide="circle-check"></i></div>
+          <div class="benefit-info">
+            <h3>Realistic AI Interviewer</h3>
+            <p>Adaptive probing questions that mirror modern technical, HR, behavioral, and coding hiring panels.</p>
+          </div>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon-box"><i data-lucide="circle-check"></i></div>
+          <div class="benefit-info">
+            <h3>Objective 6-Point Evaluation</h3>
+            <p>Scores for technical correctness, relevance, clarity, completeness, problem-solving, and communication.</p>
+          </div>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon-box"><i data-lucide="circle-check"></i></div>
+          <div class="benefit-info">
+            <h3>Speech-to-Text Voice Mode</h3>
+            <p>Answer questions aloud using your microphone to build verbal confidence, or type if you prefer text.</p>
+          </div>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon-box"><i data-lucide="circle-check"></i></div>
+          <div class="benefit-info">
+            <h3>Targeted Weak-Topic Coaching</h3>
+            <p>AI generates custom study roadmaps focusing directly on concepts you struggled with in past sessions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">FAQ</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Common questions about preparing with the AVENIR AI platform.</p>
+      </div>
+
+      <div class="faq-accordion" id="faqAccordion">
+        <div class="faq-item">
+          <button type="button" class="faq-trigger" aria-expanded="false">
+            <span>What is AVENIR AI?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>AVENIR AI is an intelligent interview preparation and career acceleration platform. Powered by Google Gemini AI, it simulates real-world mock interviews, provides structured evaluations, analyzes resumes, and suggests personalized learning roadmaps.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger" aria-expanded="false">
+            <span>How does the AI evaluate my answers?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Every response is analyzed across six key dimensions: Technical Correctness, Relevance, Clarity, Completeness, Problem Solving, and Communication. You receive a score out of 100 alongside concrete strengths, missed concepts, and an exemplary model answer.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger" aria-expanded="false">
+            <span>Can I practice using voice?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. AVENIR AI provides integrated browser speech-to-text. You can record your spoken answer, review the live transcript, edit if needed, and submit it for AI evaluation.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger" aria-expanded="false">
+            <span>Which roles and interview categories are supported?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>We support Software Developers, Frontend, Backend, Full Stack, Python, Java, Data Analysts, Data Scientists, AI/ML Engineers, Database Administrators, Cybersecurity Analysts, custom roles, and cover Technical, HR, Behavioral, and Coding categories.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger" aria-expanded="false">
+            <span>Can I export my interview results?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. Every completed mock interview generates a detailed performance report that you can view anytime in your history and download as a formatted PDF.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Banner -->
+  <section class="cta-banner">
+    <div class="section-container cta-content">
+      <h2 class="cta-title">Ready to Accelerate Your Career?</h2>
+      <p class="cta-subtitle">Join candidates preparing smarter with AVENIR AI. Practice today and walk into your next interview with confidence.</p>
+      <div class="cta-actions">
+        <a href="register.html" class="btn btn-primary btn-lg">Start Free Practice</a>
+        <a href="login.html" class="btn btn-outline btn-lg">Sign In to Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-brand">AVENIR</span><span class="logo-ai">AI</span>
+          </a>
+          <p class="footer-tagline">Your Future Starts Here.</p>
+          <p class="footer-description">Practice. Improve. Succeed. An intelligent AI-powered platform tailored to help professionals excel in technical and behavioral interviews.</p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
+
+        <!-- Platform Links -->
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul class="footer-links">
+            <li><a href="login.html">Sign In</a></li>
+            <li><a href="register.html">Get Started</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="interview-setup.html">Mock Interview</a></li>
+            <li><a href="resume-analyzer.html">Resume Analyzer</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal Links -->
+        <div class="footer-col">
+          <h4>Legal & Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="mailto:support@avenir-ai.com">support@avenir-ai.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 AVENIR AI. All rights reserved.</p>
+        <p>Your Future Starts Here.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- App Auth & Config -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+
+  <!-- Interactions Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Lucide Icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // 2. Responsive Mobile Drawer Toggle
+      const mobileBtn = document.getElementById('mobileMenuBtn');
+      const mobileDrawer = document.getElementById('mobileDrawer');
+      const menuIcon = document.getElementById('menuIcon');
+
+      if (mobileBtn && mobileDrawer) {
+        mobileBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = mobileDrawer.classList.toggle('open');
+          mobileBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          if (menuIcon) {
+            menuIcon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+            if (window.lucide) lucide.createIcons();
+          }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!mobileDrawer.contains(e.target) && !mobileBtn.contains(e.target)) {
+            if (mobileDrawer.classList.contains('open')) {
+              mobileDrawer.classList.remove('open');
+              mobileBtn.setAttribute('aria-expanded', 'false');
+              if (menuIcon) {
+                menuIcon.setAttribute('data-lucide', 'menu');
+                if (window.lucide) lucide.createIcons();
+              }
+            }
+          }
+        });
+
+        // Close on link click
+        mobileDrawer.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            mobileDrawer.classList.remove('open');
+            mobileBtn.setAttribute('aria-expanded', 'false');
+            if (menuIcon) {
+              menuIcon.setAttribute('data-lucide', 'menu');
+              if (window.lucide) lucide.createIcons();
+            }
+          });
+        });
+      }
+
+      // 3. FAQ Accordion Interaction
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(item => {
+        const trigger = item.querySelector('.faq-trigger');
+        if (trigger) {
+          trigger.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            // Close all items
+            faqItems.forEach(otherItem => {
+              otherItem.classList.remove('active');
+              const t = otherItem.querySelector('.faq-trigger');
+              if (t) t.setAttribute('aria-expanded', 'false');
+            });
+            // Open clicked if not already active
+            if (!isActive) {
+              item.classList.add('active');
+              trigger.setAttribute('aria-expanded', 'true');
+            }
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create your AVENIR AI account. Start preparing for tech, behavioral, and HR interviews with Google Gemini powered mock interviews.">
+  <title>Register - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="index.html" class="auth-logo" aria-label="Return to AVENIR AI home">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <h1 class="auth-title">Create Your Account</h1>
+        <p class="auth-subtitle">Start your journey to interview success</p>
+      </div>
+
+      <!-- Error notification container -->
+      <div class="auth-error hidden" id="registerError" role="alert" aria-live="assertive">
+        <i data-lucide="alert-circle" class="alert-icon"></i>
+        <span class="error-text" id="registerErrorText">Unable to create account. Please verify your details.</span>
+      </div>
+
+      <!-- Registration Form -->
+      <form class="auth-form" id="registerForm" novalidate>
+        <!-- Full Name Input -->
+        <div class="form-group">
+          <label for="fullName" class="form-label">Full Name</label>
+          <div class="input-wrapper">
+            <i data-lucide="user" class="input-icon"></i>
+            <input 
+              type="text" 
+              id="fullName" 
+              name="fullName" 
+              class="form-input" 
+              placeholder="Enter your full name" 
+              required 
+              minlength="2"
+              autocomplete="name"
+            >
+          </div>
+        </div>
+
+        <!-- Email Input -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <div class="input-wrapper">
+            <i data-lucide="mail" class="input-icon"></i>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              placeholder="Enter your email" 
+              required 
+              autocomplete="email"
+            >
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock" class="input-icon"></i>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Create a strong password" 
+              required 
+              minlength="8"
+              autocomplete="new-password"
+            >
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              id="passwordToggleBtn" 
+              aria-label="Toggle password visibility"
+            >
+              <i data-lucide="eye" id="toggleIcon"></i>
+            </button>
+          </div>
+          <p class="form-hint">Must contain at least 8 characters, including uppercase, lowercase, and a number.</p>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock" class="input-icon"></i>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              name="confirmPassword" 
+              class="form-input" 
+              placeholder="Confirm your password" 
+              required 
+              minlength="8"
+              autocomplete="new-password"
+            >
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              id="confirmPasswordToggleBtn" 
+              aria-label="Toggle confirm password visibility"
+            >
+              <i data-lucide="eye" id="confirmToggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Terms and Conditions Checkbox -->
+        <div class="form-group">
+          <label class="checkbox-label" for="agreeTerms">
+            <input type="checkbox" id="agreeTerms" name="agreeTerms" class="form-checkbox" required>
+            <span>I agree to the <a href="#" class="inline-link">Terms of Service</a> and <a href="#" class="inline-link">Privacy Policy</a></span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block btn-auth" id="registerBtn">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-spinner hidden" id="registerSpinner">
+            <i data-lucide="loader" class="spinner-icon"></i>
+          </span>
+        </button>
+      </form>
+
+      <div class="auth-divider">
+        <span>or</span>
+      </div>
+
+      <!-- Social Login Button -->
+      <button type="button" class="btn btn-outline btn-block btn-google" id="googleSignUpBtn">
+        <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+        </svg>
+        <span>Sign up with Google</span>
+      </button>
+
+      <!-- Card Footer -->
+      <footer class="auth-footer">
+        <p>Already have an account? <a href="login.html" class="auth-link">Sign In</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- App Auth & Config -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+
+  <!-- Password visibility toggles -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      function setupPasswordToggle(btnId, inputId) {
+        const btn = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        if (btn && input) {
+          btn.addEventListener('click', () => {
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.innerHTML = isPassword 
+              ? '<i data-lucide="eye-off"></i>' 
+              : '<i data-lucide="eye"></i>';
+            lucide.createIcons();
+          });
+        }
+      }
+
+      setupPasswordToggle('passwordToggleBtn', 'password');
+      setupPasswordToggle('confirmPasswordToggleBtn', 'confirmPassword');
+    });
+  </script>
+</body>
+</html>

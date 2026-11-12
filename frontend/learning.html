@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Learning Resources - Adaptive study plans, curated reading lists, practice exercises, and week-by-week interview roadmaps tailored to your weaknesses.">
+  <title>Learning Resources - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item active">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Learning Resources</span>
+                      </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header header-with-actions">
+        <div class="header-titles">
+          <h1 class="page-title">Learning Resources</h1>
+          <p class="page-subtitle">Customized roadmaps and study materials targeted to your interview weak spots.</p>
+        </div>
+
+        <div class="learning-actions">
+          <button type="button" class="btn btn-primary" id="generatePlanBtn">
+            <i data-lucide="sparkles"></i>
+            <span>Generate Learning Plan</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- AI Disclaimer Alert -->
+      <div class="ai-disclaimer" role="note">
+        <i data-lucide="info" class="disclaimer-icon"></i>
+        <span>These recommendations are personalized AI suggestions based on your target job role, experience level, and interview performance history.</span>
+      </div>
+
+      <!-- Actionable Error State Banner (Hidden by default) -->
+      <div id="learningErrorState" class="dashboard-panel" style="display: none; border-left: 4px solid #EF4444; background: #FFF5F5; margin-bottom: 24px; padding: 20px 24px;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: flex-start; gap: 14px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #FEE2E2; color: #DC2626; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <i data-lucide="alert-triangle" style="width: 20px; height: 20px;"></i>
+            </div>
+            <div>
+              <h4 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #991B1B;">Learning Plan Notice</h4>
+              <p id="learningErrorMessage" style="margin: 0; font-size: 13px; color: #7F1D1D; line-height: 1.5;">Unable to generate learning plan. Please try again.</p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="retryGenerateBtn" style="flex-shrink: 0;">
+            <i data-lucide="refresh-cw"></i>
+            <span>Retry Generation</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepped Generation Overlay (Hidden by default) -->
+      <div id="generationModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="background: #FFFFFF; border-radius: 16px; padding: 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-primary-light, #FFF0ED); color: var(--color-primary, #FF5841); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+            <i data-lucide="sparkles" style="width: 28px; height: 28px;"></i>
+          </div>
+          <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 800; color: #252525;">Building Your Learning Roadmap</h3>
+          <p style="margin: 0 0 24px 0; font-size: 13px; color: #6B7280;">Our AI is crafting a tailored 7-day curriculum based on your interview profile.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; text-align: left;" id="generationStagesList">
+            <div class="gen-stage-item" id="stage1" style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; background: #F9FAFB;">
+              <span class="stage-icon" style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; background: #E5E7EB; color: #6B7280;">1</span>
+              <span class="stage-text" style="font-size: 13px; font-weight: 600; color: #374151;">Analyzing interview performance & weak areas</span>
+            </div>
+            <div class="gen-stage-item" id="stage2" style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; background: #F9FAFB;">
+              <span class="stage-icon" style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; background: #E5E7EB; color: #6B7280;">2</span>
+              <span class="stage-text" style="font-size: 13px; font-weight: 600; color: #374151;">Creating personalized 7-day roadmap</span>
+            </div>
+            <div class="gen-stage-item" id="stage3" style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; background: #F9FAFB;">
+              <span class="stage-icon" style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; background: #E5E7EB; color: #6B7280;">3</span>
+              <span class="stage-text" style="font-size: 13px; font-weight: 600; color: #374151;">Preparing curated resources & practice drills</span>
+            </div>
+            <div class="gen-stage-item" id="stage4" style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; background: #F9FAFB;">
+              <span class="stage-icon" style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; background: #E5E7EB; color: #6B7280;">4</span>
+              <span class="stage-text" style="font-size: 13px; font-weight: 600; color: #374151;">Saving learning plan to your profile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roadmap Progress Dashboard -->
+      <section class="dashboard-panel learning-overview-card" id="learningOverviewCard">
+        <div class="learning-stats-grid">
+          <div class="learning-stat-card">
+            <div class="learning-stat-icon-box icon-orange">
+              <i data-lucide="percent"></i>
+            </div>
+            <div class="learning-stat-content">
+              <span class="learning-stat-label">Overall Completion</span>
+              <span class="learning-stat-value" id="roadmapProgressPct">0%</span>
+            </div>
+          </div>
+
+          <div class="learning-stat-card">
+            <div class="learning-stat-icon-box icon-green">
+              <i data-lucide="check-circle-2"></i>
+            </div>
+            <div class="learning-stat-content">
+              <span class="learning-stat-label">Completed Topics</span>
+              <span class="learning-stat-value" id="completedTopicsCount">0</span>
+            </div>
+          </div>
+
+          <div class="learning-stat-card">
+            <div class="learning-stat-icon-box icon-blue">
+              <i data-lucide="clock"></i>
+            </div>
+            <div class="learning-stat-content">
+              <span class="learning-stat-label">In Progress</span>
+              <span class="learning-stat-value" id="inProgressTopicsCount">0</span>
+            </div>
+          </div>
+
+          <div class="learning-stat-card">
+            <div class="learning-stat-icon-box icon-purple">
+              <i data-lucide="compass"></i>
+            </div>
+            <div class="learning-stat-content">
+              <span class="learning-stat-label">Upcoming Topics</span>
+              <span class="learning-stat-value" id="upcomingTopicsCount">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-header">
+            <span class="progress-label-text" id="roadmapProgressRatio">0 of 0 Topics Mastered</span>
+            <span class="progress-subtext" id="roadmapProgressSub">Keep going! Consistent daily practice builds confidence and interview mastery.</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="roadmapProgressBar" style="width: 0%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty State for users without an active learning plan (Displayed when no roadmap in Firestore) -->
+      <section class="empty-state-card" id="emptyState" style="display: none; padding: 48px 24px; text-align: center; background: #FFFFFF; border: 1.5px dashed var(--color-border, #F0E2E8); border-radius: 16px; margin-bottom: 24px;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--color-primary-light, #FFF0ED); color: var(--color-primary, #FF5841); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+          <i data-lucide="book-open" style="width: 32px; height: 32px;"></i>
+        </div>
+        <h3 class="empty-title" style="margin: 0 0 8px 0; font-size: 18px; font-weight: 800; color: #252525;">No Learning Plan Generated Yet</h3>
+        <p class="empty-desc" style="max-width: 520px; margin: 0 auto 20px auto; color: #6B7280; font-size: 14px; line-height: 1.5;">Our Gemini AI analyzes your target job role, experience level, and past interview evaluations to craft a customized 7-day preparation roadmap with concrete exercises.</p>
+        <button type="button" class="btn btn-primary" id="emptyGenerateBtn">
+          <i data-lucide="sparkles"></i>
+          <span>Generate My Learning Plan</span>
+        </button>
+      </section>
+
+      <!-- Dynamic Personalized Learning Roadmap Content (Rendered by learning.js) -->
+      <section class="learning-roadmap" id="roadmapContent">
+        <!-- Rendered dynamically -->
+      </section>
+
+      <!-- Career Opportunities Matching Section -->
+      <section class="dashboard-panel career-opportunities-panel" style="margin-top: 32px;">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <i data-lucide="briefcase" class="panel-icon icon-orange"></i>
+            <h3 class="panel-title">Active Opportunities Matching Your Learning Focus</h3>
+          </div>
+          <span class="badge badge-success">Live Openings</span>
+        </div>
+        <div class="panel-body">
+          <div class="jobs-list" id="learningJobsList">
+            <div style="padding: 16px; text-align: center; color: var(--text-secondary);">
+              Loading active career opportunities...
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/learning.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

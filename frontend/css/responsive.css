@@ -1,0 +1,435 @@
+/**
+ * AVENIR AI - Responsive Stylesheet
+ * Strict breakpoints: 1200px, 1024px, 768px, 480px, 360px
+ * Ensures zero horizontal overflow, clean single-row desktop navigation,
+ * and seamless mobile navigation drawer transitions.
+ */
+
+/* ==========================================================================
+   DESKTOP DEFAULT GUARDS (> 768px)
+   ========================================================================== */
+@media (min-width: 769px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  .mobile-drawer {
+    display: none !important;
+  }
+
+  .nav-links {
+    display: flex !important;
+  }
+
+  .nav-actions {
+    display: flex !important;
+  }
+}
+
+/* ==========================================================================
+   TABLET & LAPTOP (<= 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-8);
+  }
+
+  .hero-content {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-preview {
+    max-width: 520px;
+    width: 100%;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+}
+
+/* ==========================================================================
+   MOBILE & TABLET PORTRAIT (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* Navigation Bar Adjustments */
+  .navbar {
+    padding: 0 var(--space-4);
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  .nav-actions {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 50px 0 70px;
+    margin-top: 72px;
+  }
+
+  .hero-title {
+    font-size: 2.35rem;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  .hero-preview {
+    max-width: 100%;
+  }
+
+  .floating-badge {
+    position: static;
+    margin-top: 12px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Features & How It Works Sections */
+  .features,
+  .how-it-works,
+  .benefits,
+  .faq-section {
+    padding: 70px 0;
+  }
+
+  .section-title {
+    font-size: 1.85rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* CTA Banner */
+  .cta-banner {
+    padding: 60px 0;
+  }
+
+  .cta-title {
+    font-size: 1.85rem;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cta-actions .btn {
+    width: 100%;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 60px 0 24px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   SMALL MOBILE SCREENS (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .mockup-body {
+    padding: 16px;
+  }
+
+  .mockup-score-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .score-pills {
+    flex-wrap: wrap;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL OVERFLOW & VIEWPORT DEFENSE
+   ========================================================================== */
+html,
+body {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   DASHBOARD & INTERNAL APPS (<= 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    z-index: 1050 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: none !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18) !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 20px 16px 48px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+  }
+
+  .top-bar {
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px;
+  }
+
+  .dashboard-grid,
+  .dashboard-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .role-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .config-options,
+  .config-options-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
+   MOBILE PHONES & TABLETS PORTRAIT (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    font-size: 1.5rem !important;
+  }
+
+  .page-actions,
+  .header-action {
+    width: 100%;
+  }
+
+  .page-actions .btn,
+  .header-action .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-input-box {
+    width: 100%;
+  }
+
+  .filter-controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .filter-controls .select-wrapper,
+  .filter-controls .filter-select,
+  .filter-controls .btn {
+    width: 100%;
+  }
+
+  .role-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .setup-step-content {
+    padding: 20px 16px !important;
+  }
+
+  .setup-nav-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .setup-nav-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal-card {
+    max-width: 92vw;
+    padding: 24px 18px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   SMALL MOBILE PHONES (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.85rem !important;
+  }
+
+  .section-title {
+    font-size: 1.5rem !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .dashboard-welcome {
+    padding: 18px 16px;
+  }
+
+  .welcome-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .welcome-action {
+    width: 100%;
+  }
+
+  .welcome-action .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .breadcrumbs {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ==========================================================================
+   PRINT MEDIA STYLES
+   ========================================================================== */
+@media print {
+
+  .navbar-header,
+  .mobile-menu-btn,
+  .mobile-drawer,
+  .cta-banner,
+  .footer {
+    display: none !important;
+  }
+
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+  }
+}

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Live Mock Interview Room. Answer AI-powered technical and behavioral questions via text or voice, and receive instant feedback.">
+  <title>Interview - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/interview.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="interview-room-body">
+
+  <div class="interview-room">
+    <!-- Interview Header -->
+    <header class="interview-header">
+      <div class="header-left">
+        <a href="dashboard.html" class="nav-logo" aria-label="AVENIR AI Home">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+
+        <div class="ai-badge" role="status">
+          <span class="status-dot"></span>
+          <span>AI Interviewer</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="interview-badges">
+          <span class="badge badge-role" id="roomRoleBadge">Software Developer</span>
+          <span class="badge badge-category" id="roomCategoryBadge">Technical</span>
+          <span class="badge badge-difficulty" id="roomDifficultyBadge">Medium</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+<div class="timer-display" id="interviewTimer">
+          <i data-lucide="clock" class="timer-icon"></i>
+          <span class="time-text" id="timeRemaining">03:00</span>
+        </div>
+
+        <button type="button" class="btn btn-danger btn-sm" id="endInterviewBtn">
+          <i data-lucide="log-out"></i>
+          <span>End Interview</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Interview Progress Bar -->
+    <div class="interview-progress-wrapper">
+      <div class="progress-info-row">
+        <span class="counter-text">
+          Question <span id="currentQ">1</span> of <span id="totalQ">10</span>
+        </span>
+        <span class="progress-percent" id="progressPercentText">10%</span>
+      </div>
+      <div class="interview-progress-bar">
+        <div class="progress-fill" id="interviewProgressBar" style="width: 10%;"></div>
+      </div>
+    </div>
+
+    <!-- Main Interview Area -->
+    <main class="interview-main-content">
+      <div class="interview-container">
+
+        <!-- Question Card -->
+        <article class="question-card" id="questionCard">
+          <div class="question-meta">
+            <span class="question-number badge" id="questionBadge">Question 1</span>
+            <span class="question-category-tag" id="questionCategoryTag">Technical Interview</span>
+            <span class="question-difficulty-tag badge" id="questionDifficultyTag">Medium</span>
+          </div>
+
+          <!-- Standard Question Body (HR, Technical, Behavioral, Domain-Specific) -->
+          <div class="question-body standard-question-body" id="standardQuestionBody">
+            <h2 class="question-text" id="questionText">Loading interview question...</h2>
+            <div class="question-submeta-bar" id="questionSubmetaBar">
+              <span class="submeta-pill hidden" id="submetaCompetencyPill"><i data-lucide="award"></i> <span id="submetaCompetencyText"></span></span>
+              <span class="submeta-pill hidden" id="submetaDomainPill"><i data-lucide="globe"></i> <span id="submetaDomainText"></span></span>
+            </div>
+
+            <!-- STAR Framework Guide (Behavioral Interview) -->
+            <div class="star-framework-card hidden" id="starFrameworkCard">
+              <div class="star-card-title"><i data-lucide="compass"></i> STAR Response Framework Guide</div>
+              <div class="star-grid">
+                <div class="star-item"><span class="star-letter">S</span><div class="star-desc"><strong>Situation:</strong> <span id="starSitText">Context & background</span></div></div>
+                <div class="star-item"><span class="star-letter">T</span><div class="star-desc"><strong>Task:</strong> <span id="starTaskText">Your exact responsibility</span></div></div>
+                <div class="star-item"><span class="star-letter">A</span><div class="star-desc"><strong>Action:</strong> <span id="starActionText">Concrete steps you took</span></div></div>
+                <div class="star-item"><span class="star-letter">R</span><div class="star-desc"><strong>Result:</strong> <span id="starResultText">Measurable outcome & lessons</span></div></div>
+              </div>
+            </div>
+
+            <!-- Expected Technical Concepts (Technical Interview) -->
+            <div class="technical-concepts-card hidden" id="technicalConceptsCard">
+              <div class="concepts-title"><i data-lucide="cpu"></i> Key Concepts to Address:</div>
+              <div class="concepts-chips" id="technicalConceptsList"></div>
+            </div>
+          </div>
+
+          <!-- Dedicated Coding Challenge Body (Coding Interview) -->
+          <div class="question-body coding-question-body hidden" id="codingQuestionBody">
+            <div class="coding-problem-header">
+              <h2 class="coding-problem-title" id="codingProblemTitle">Loading Coding Challenge...</h2>
+              <span class="badge badge-coding-tag" id="codingLangSupportTag">C / C++ / Python / Java</span>
+            </div>
+
+            <div class="coding-problem-desc" id="codingProblemDesc">Loading problem description...</div>
+
+            <div class="coding-io-grid" id="codingIOGrid">
+              <div class="io-card">
+                <h5><i data-lucide="arrow-down-left"></i> Input Format</h5>
+                <p id="codingInputFormat">Standard input (stdin)</p>
+              </div>
+              <div class="io-card">
+                <h5><i data-lucide="arrow-up-right"></i> Output Format</h5>
+                <p id="codingOutputFormat">Standard output (stdout)</p>
+              </div>
+            </div>
+
+            <!-- Problem Examples -->
+            <div class="coding-examples-section">
+              <h5 class="examples-heading"><i data-lucide="book-open"></i> Examples</h5>
+              <div class="examples-container" id="codingExamplesContainer"></div>
+            </div>
+
+            <!-- Constraints -->
+            <div class="coding-constraints-box" id="codingConstraintsBox">
+              <h5 class="constraints-heading"><i data-lucide="shield-alert"></i> Constraints</h5>
+              <div class="constraints-chips" id="codingConstraintsList"></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Answer Section -->
+        <section class="answer-section" id="answerSection">
+
+          <!-- Dedicated Coding Workspace (Active for Coding Interviews) -->
+          <div class="coding-workspace-container" id="codingWorkspaceContainer" style="display: none;">
+            <div class="coding-editor-toolbar">
+              <div class="toolbar-left">
+                <span class="editor-title-tag"><i data-lucide="terminal"></i> Solution Editor</span>
+                <div class="coding-lang-picker">
+                  <label for="codingLanguageSelect" class="sr-only">Programming Language</label>
+                  <select id="codingLanguageSelect" class="coding-lang-select" aria-label="Select Programming Language">
+                    <option value="c">C (GCC)</option>
+                    <option value="cpp">C++ (GCC)</option>
+                    <option value="python">Python 3</option>
+                    <option value="java">Java (OpenJDK)</option>
+                    <option value="javascript">JavaScript (Node.js)</option>
+                  </select>
+                </div>
+                <button type="button" class="btn btn-outline btn-xs" id="resetStarterCodeBtn" title="Reset to initial starter template">
+                  <i data-lucide="rotate-ccw"></i> Reset Starter
+                </button>
+              </div>
+
+              <div class="toolbar-right">
+                <button type="button" class="btn btn-secondary btn-sm" id="runTestCasesBtn">
+                  <i data-lucide="play"></i>
+                  <span id="runTestCasesBtnText">Run & Test Cases</span>
+                  <span class="btn-spinner hidden" id="runTestCasesSpinner">
+                    <i data-lucide="loader" class="spinner-icon"></i>
+                  </span>
+                </button>
+                <button type="button" class="btn btn-primary btn-sm btn-submit-solution" id="submitCodingSolutionBtn">
+                  <i data-lucide="check-circle-2"></i>
+                  <span class="btn-text">Submit Solution</span>
+                  <span class="btn-spinner hidden" id="submitCodingSpinner">
+                    <i data-lucide="loader" class="spinner-icon"></i>
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Code Editor Textarea -->
+            <div class="coding-editor-wrapper">
+              <textarea
+                id="codingCodeEditor"
+                class="coding-code-editor"
+                spellcheck="false"
+                placeholder="// Write your solution here... You can use standard I/O (scanf/printf, cin/cout, input()/print, etc.)"
+                rows="14"
+              ></textarea>
+            </div>
+
+            <!-- Test Cases Runner & Execution Drawer -->
+            <div class="coding-test-panel" id="codingTestPanel">
+              <div class="test-panel-header">
+                <div class="test-panel-tabs">
+                  <button type="button" class="test-tab-btn active" id="tabTestCasesBtn">
+                    <i data-lucide="check-square"></i> Test Cases <span class="test-summary-pill" id="testCasesSummaryPill">0/0 Passed</span>
+                  </button>
+                  <button type="button" class="test-tab-btn" id="tabRawConsoleBtn">
+                    <i data-lucide="terminal"></i> Console Output
+                  </button>
+                </div>
+                <span class="execution-time-label" id="testExecutionTime"></span>
+              </div>
+
+              <!-- Test Cases Tab Content -->
+              <div class="test-panel-body" id="testCasesTabContent">
+                <div class="testcases-list" id="testCasesList">
+                  <div class="testcase-placeholder-hint">Click &ldquo;Run & Test Cases&rdquo; to execute your solution against problem test cases in a sandboxed Wandbox environment.</div>
+                </div>
+              </div>
+
+              <!-- Raw Console Tab Content -->
+              <div class="test-panel-body hidden" id="rawConsoleTabContent">
+                <pre class="coding-raw-console" id="codingRawConsole">No output yet.</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conversational Workspace (Active for HR, Behavioral, Technical, Domain-Specific) -->
+          <div class="conversational-workspace-container" id="conversationalWorkspaceContainer">
+            <div class="answer-header">
+              <label for="answerInput" class="answer-label">Your Response</label>
+
+              <!-- Voice Controls & Optional Technical Snippet Toggle -->
+              <div class="answer-tools-group">
+                <button 
+                  type="button" 
+                  class="btn btn-outline btn-sm hidden" 
+                  id="toggleCodeSandboxBtn"
+                  title="Toggle optional code snippet drawer for technical interviews"
+                >
+                  <i data-lucide="code-2"></i>
+                  <span id="codeSandboxBtnText">Code Snippet</span>
+                </button>
+
+                <div class="voice-controls" id="voiceControls">
+                  <button 
+                    type="button" 
+                    class="mic-btn" 
+                    id="voiceToggleBtn" 
+                    aria-label="Toggle voice recording"
+                  >
+                    <i data-lucide="mic" id="micIcon"></i>
+                  </button>
+                  <span class="voice-label" id="voiceLabel">Click to speak</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Optional Code Snippet Panel for Technical interviews -->
+            <div class="code-sandbox-panel hidden" id="codeSandboxPanel">
+              <div class="sandbox-header">
+                <div class="sandbox-lang-picker">
+                  <i data-lucide="terminal" style="width:14px;height:14px;"></i>
+                  <label for="sandboxLangSelect">Language:</label>
+                  <select id="sandboxLangSelect">
+                    <option value="javascript">JavaScript (Node.js)</option>
+                    <option value="python">Python 3</option>
+                    <option value="c">C (GCC)</option>
+                    <option value="cpp">C++ (GCC)</option>
+                    <option value="java">Java (OpenJDK)</option>
+                  </select>
+                </div>
+                <div class="sandbox-btn-group">
+                  <button type="button" class="btn btn-secondary btn-sm" id="runSandboxCodeBtn">
+                    <i data-lucide="play"></i>
+                    <span id="runCodeBtnText">Run Snippet</span>
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" id="attachCodeToAnswerBtn">
+                    <i data-lucide="corner-down-left"></i>
+                    <span>Attach to Answer</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Code Editor Area -->
+              <textarea 
+                id="sandboxCodeInput" 
+                class="sandbox-code-editor" 
+                spellcheck="false" 
+                placeholder="// Write code snippet to support your explanation..."
+                rows="6"
+              ></textarea>
+
+              <!-- Console Output -->
+              <div class="sandbox-console-wrapper">
+                <div class="console-title-row">
+                  <span class="console-title">Snippet Output</span>
+                  <button type="button" class="console-clear-action" id="clearSandboxConsoleBtn">Clear</button>
+                </div>
+                <pre class="sandbox-console-body" id="sandboxConsoleOutput">Ready. Click 'Run Snippet' to execute.</pre>
+              </div>
+            </div>
+
+            <div class="answer-input-container">
+              <textarea 
+                id="answerInput" 
+                class="answer-textarea" 
+                placeholder="Type your answer here or click the microphone to dictate your response..." 
+                rows="6"
+              ></textarea>
+              <div class="word-counter" id="wordCounter">0 words</div>
+            </div>
+
+            <div class="answer-actions">
+              <button type="button" class="btn btn-outline" id="skipQuestionBtn">
+                <i data-lucide="skip-forward"></i>
+                <span>Skip Question</span>
+              </button>
+
+              <button type="button" class="btn btn-primary btn-submit-answer" id="submitAnswerBtn">
+                <span class="btn-text">Submit Answer</span>
+                <span class="btn-spinner hidden" id="submitSpinner">
+                  <i data-lucide="loader" class="spinner-icon"></i>
+                </span>
+                <i data-lucide="arrow-right" class="btn-arrow"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Live Evaluation Card (shown after submission) -->
+        <section class="evaluation-card hidden" id="evaluationCard" aria-live="polite">
+          <div class="eval-top-banner">
+            <div class="eval-title-group">
+              <div class="eval-sparkle-box">
+                <i data-lucide="sparkles" class="eval-icon"></i>
+              </div>
+              <div>
+                <h3 class="eval-title" id="evalTitle">Instant AI Evaluation</h3>
+                <p class="eval-subtitle" id="evalStatusSubtitle">Analysis generated by Google Gemini AI</p>
+              </div>
+            </div>
+
+            <!-- Skipped Question Badge (shown if skipped) -->
+            <div class="eval-status-badge hidden" id="evalStatusBadge">
+              <i data-lucide="skip-forward"></i>
+              <span>Skipped</span>
+            </div>
+          </div>
+
+          <!-- Evaluation Score Overview Dashboard -->
+          <div class="eval-score-dashboard">
+            <!-- Circular Score Display -->
+            <div class="eval-circle-container">
+              <div class="score-circle-donut" id="questionScoreCircle" style="--score-pct: 0%;">
+                <div class="score-circle-donut-inner">
+                  <span class="score-val" id="questionScore">0</span>
+                  <span class="score-max">/100</span>
+                </div>
+              </div>
+              <span class="score-status-text" id="scoreStatusText">Overall Score</span>
+            </div>
+
+            <!-- Dynamic Category-Specific Metrics (Populated via JS) -->
+            <div class="eval-metrics-group" id="evalMetricsGroup">
+              <!-- Dynamically populated per category: Coding, HR, Technical, Behavioral, Domain -->
+            </div>
+          </div>
+
+          <!-- Coding Complexity & Optimal Solution Box (Shown only for coding) -->
+          <div class="eval-coding-analysis-box hidden" id="evalCodingAnalysisBox">
+            <div class="complexity-row">
+              <div class="complexity-pill">
+                <span class="complexity-lbl"><i data-lucide="clock"></i> Time Complexity:</span>
+                <strong class="complexity-val" id="evalTimeComplexity">O(N)</strong>
+              </div>
+              <div class="complexity-pill">
+                <span class="complexity-lbl"><i data-lucide="database"></i> Space Complexity:</span>
+                <strong class="complexity-val" id="evalSpaceComplexity">O(1)</strong>
+              </div>
+              <button type="button" class="btn btn-outline btn-xs model-solution-toggle" id="toggleModelSolutionBtn">
+                <i data-lucide="code"></i> View Optimal Solution
+              </button>
+            </div>
+            <div class="model-solution-drawer hidden" id="modelSolutionDrawer">
+              <div class="model-solution-header">
+                <span>Optimal Approach Reference</span>
+              </div>
+              <pre class="model-solution-code" id="modelSolutionCode"></pre>
+            </div>
+          </div>
+
+          <!-- Interviewer Notes -->
+          <div class="eval-commentary-box">
+            <div class="commentary-header">
+              <i data-lucide="message-square" class="commentary-icon"></i>
+              <h4 class="commentary-title">Interviewer Feedback & Recommendations</h4>
+            </div>
+            <p class="commentary-text" id="evalFeedbackText">Your response was analyzed against industry benchmarks.</p>
+          </div>
+
+          <!-- Strengths & Areas to Improve Grid -->
+          <div class="eval-breakdown-grid">
+            <div class="feedback-block strengths-block">
+              <div class="block-title">
+                <i data-lucide="check-circle-2" class="block-icon success-icon"></i>
+                <span>Strengths</span>
+              </div>
+              <ul class="feedback-list" id="evalStrengths">
+                <li>Demonstrated good understanding.</li>
+              </ul>
+            </div>
+
+            <div class="feedback-block weaknesses-block">
+              <div class="block-title">
+                <i data-lucide="alert-triangle" class="block-icon warning-icon"></i>
+                <span>Areas to Improve</span>
+              </div>
+              <ul class="feedback-list" id="evalWeaknesses">
+                <li>Consider elaborating on practical tradeoffs.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Next Question Action Footer -->
+          <div class="eval-footer">
+            <button type="button" class="btn btn-outline" id="evalEndEarlyBtn">
+              <i data-lucide="log-out"></i>
+              <span>End Interview</span>
+            </button>
+            <button type="button" class="btn btn-primary btn-lg" id="nextQuestionBtn">
+              <span id="nextQuestionBtnText">Next Question</span>
+              <i data-lucide="arrow-right" id="nextQuestionBtnIcon"></i>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Confirmation Modal for Ending Interview -->
+    <div class="modal-backdrop hidden" id="endConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-card">
+        <div class="modal-icon-warning">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <h3 class="modal-title" id="modalTitle">End Mock Interview?</h3>
+        <p class="modal-desc">Ending the session now will finalize your evaluation up to the questions answered so far. Are you sure you want to finish?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelEndBtn">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmEndBtn">End & View Results</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/interview.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Word count helper for answer textarea
+      const answerInput = document.getElementById('answerInput');
+      const wordCounter = document.getElementById('wordCounter');
+      if (answerInput && wordCounter) {
+        answerInput.addEventListener('input', () => {
+          const words = answerInput.value.trim().split(/\s+/).filter(w => w.length > 0);
+          wordCounter.textContent = `${words.length} word${words.length === 1 ? '' : 's'}`;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+

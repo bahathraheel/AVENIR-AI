@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Group Mock Interview - Create collaborative interview study rooms or join peers for live competitive mock assessments.">
+  <title>Group Interview - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/interview.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item active">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Group Interview</span>
+                      </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <div class="header-titles">
+          <h1 class="page-title">Group Interview</h1>
+          <p class="page-subtitle">Collaborate with peers, practice answering simultaneously, and benchmark your answers together in real time.</p>
+        </div>
+      </header>
+
+      <!-- Lobby: Group Actions (Create & Join) -->
+      <section class="group-actions-container" id="groupActionsView">
+        <div class="group-grid">
+          <!-- Create Room Card -->
+          <div class="dashboard-panel group-panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i data-lucide="plus-circle" class="panel-icon icon-orange"></i>
+                <h3 class="panel-title">Create a Study Room</h3>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <form id="createRoomForm" class="group-form">
+                <div class="form-group">
+                  <label for="createRoomRole" class="form-label">Job Role</label>
+                  <select id="createRoomRole" class="form-select" required>
+                    <option value="Software Developer">Software Developer</option>
+                    <option value="Frontend Developer">Frontend Developer</option>
+                    <option value="Backend Developer">Backend Developer</option>
+                    <option value="Full Stack Developer">Full Stack Developer</option>
+                    <option value="Python Developer">Python Developer</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="AI/ML Engineer">AI/ML Engineer</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="createRoomCategory" class="form-label">Interview Category</label>
+                  <select id="createRoomCategory" class="form-select" required>
+                    <option value="Technical Interview">Technical Interview</option>
+                    <option value="Coding Interview">Coding Interview</option>
+                    <option value="Behavioral Interview">Behavioral Interview</option>
+                    <option value="HR Interview">HR Interview</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="createRoomDifficulty" class="form-label">Difficulty</label>
+                  <select id="createRoomDifficulty" class="form-select" required>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Hard">Hard</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="createRoomLimit" class="form-label">Participant Limit</label>
+                  <select id="createRoomLimit" class="form-select">
+                    <option value="2">2 Participants</option>
+                    <option value="4" selected>4 Participants</option>
+                    <option value="6">6 Participants</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="createRoomBtn">
+                  <i data-lucide="door-open"></i>
+                  <span>Create Room</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Join Room Card -->
+          <div class="dashboard-panel group-panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i data-lucide="log-in" class="panel-icon icon-blue"></i>
+                <h3 class="panel-title">Join Existing Room</h3>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <form id="joinRoomForm" class="group-form">
+                <div class="form-group">
+                  <label for="joinRoomCode" class="form-label">6-Digit Room Code</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="hash" class="input-icon"></i>
+                    <input 
+                      type="text" 
+                      id="joinRoomCode" 
+                      class="form-input code-input" 
+                      placeholder="e.g. AV8902" 
+                      maxlength="8" 
+                      required
+                    >
+                  </div>
+                  <p class="form-hint">Ask your study partner or host for their room code.</p>
+                </div>
+
+                <div class="auth-error hidden" id="joinError" role="alert">
+                  <i data-lucide="alert-circle" class="alert-icon"></i>
+                  <span class="error-text" id="joinErrorText">Invalid room code or session has already ended.</span>
+                </div>
+
+                <button type="submit" class="btn btn-secondary btn-block" id="joinRoomBtn">
+                  <i data-lucide="users"></i>
+                  <span>Join Session</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Room View (Hidden by default, revealed upon room creation or joining) -->
+      <section class="room-view hidden" id="roomView">
+        <!-- Room Info Bar -->
+        <div class="room-info-bar">
+          <div class="room-header-left">
+            <div class="room-code-tag">
+              <span class="code-label">ROOM:</span>
+              <strong class="code-val" id="roomCodeDisplay">AV8902</strong>
+              <button type="button" class="btn-copy-code" id="copyCodeBtn" aria-label="Copy Room Code">
+                <i data-lucide="copy"></i>
+              </button>
+            </div>
+            <div class="room-badges-list">
+              <span class="badge" id="groupRoleBadge">Software Developer</span>
+              <span class="badge" id="groupCategoryBadge">Technical</span>
+              <span class="badge badge-accent" id="hostStatusBadge">Host</span>
+            </div>
+          </div>
+
+          <div class="room-header-right">
+            <button type="button" class="btn btn-primary" id="startSessionBtn">
+              <i data-lucide="play"></i>
+              <span>Start Session</span>
+            </button>
+            <button type="button" class="btn btn-outline" id="leaveRoomBtn">
+              <i data-lucide="log-out"></i>
+              <span>Leave Room</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Participants List -->
+        <div class="participants-panel dashboard-panel">
+          <div class="panel-header">
+            <h4 class="panel-title">Participants (<span id="participantCount">2</span>/<span id="participantCapacity">4</span>)</h4>
+          </div>
+          <div class="participants-list" id="participantsList">
+            <div class="participant-item">
+              <div class="participant-avatar">AR</div>
+              <div class="participant-info">
+                <span class="p-name">Alex (Host)</span>
+                <span class="p-status text-success"><span class="status-dot"></span> Ready</span>
+              </div>
+            </div>
+            <div class="participant-item">
+              <div class="participant-avatar">YU</div>
+              <div class="participant-info">
+                <span class="p-name">You</span>
+                <span class="p-status text-success"><span class="status-dot"></span> Ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group Live Interview Area -->
+        <div class="group-interview-area" id="groupInterviewArea">
+          <div class="question-card" id="groupQuestionCard">
+            <div class="question-meta">
+              <span class="question-number badge" id="groupQNum">Question 1</span>
+              <span class="timer-display"><i data-lucide="clock"></i> 02:00</span>
+            </div>
+            <h3 class="question-text" id="groupQText">Explain how database connection pooling optimizes application performance and what risks emerge if connection pool exhaustion occurs.</h3>
+          </div>
+
+          <div class="answer-section">
+            <label for="groupAnswerInput" class="answer-label">Your Response</label>
+            <textarea id="groupAnswerInput" class="answer-textarea" placeholder="Type your answer..." rows="5"></textarea>
+            <div class="answer-actions">
+              <button type="button" class="btn btn-primary" id="groupSubmitAnswerBtn">
+                <span>Submit Answer</span>
+                <i data-lucide="check"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group Performance Comparison (revealed after questions completed) -->
+        <div class="group-comparison-panel dashboard-panel hidden" id="groupComparisonPanel">
+          <div class="panel-header">
+            <h3 class="panel-title">Group Performance Comparison</h3>
+          </div>
+          <div class="comparison-table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Participant</th>
+                  <th>Technical Score</th>
+                  <th>Communication</th>
+                  <th>Overall</th>
+                </tr>
+              </thead>
+              <tbody id="groupComparisonTableBody">
+                <tr>
+                  <td><strong>Alex (Host)</strong></td>
+                  <td>92%</td>
+                  <td>88%</td>
+                  <td><span class="score-pill good">90%</span></td>
+                </tr>
+                <tr class="current-user-row">
+                  <td><strong>You</strong></td>
+                  <td>88%</td>
+                  <td>90%</td>
+                  <td><span class="score-pill good">89%</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/group.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

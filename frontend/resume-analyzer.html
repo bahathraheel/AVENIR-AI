@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI-Powered Resume Analyzer on AVENIR AI. Get ATS compatibility scoring, keyword matching, and tailor your resume for top engineering roles.">
+  <title>Resume Analyzer - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item active">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Resume Analyzer</span>
+                      </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <div class="header-titles">
+          <h1 class="page-title">AI Resume Analyzer</h1>
+          <p class="page-subtitle">Upload your CV to receive instant ATS compatibility scores, skill gap breakdowns, and actionable suggestions.</p>
+        </div>
+      </header>
+
+      <!-- Resume Analyzer Container -->
+      <div class="resume-container">
+        <!-- Resume Upload Card -->
+        <section class="resume-upload-card" id="uploadCard">
+          <div class="upload-card-header">
+            <h2 class="card-title">Upload Your Resume</h2>
+            <p class="card-subtitle">Select your target position and drop your latest PDF or Word document.</p>
+          </div>
+
+          <!-- Drag and drop zone -->
+          <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Upload resume file dropzone">
+            <div class="dropzone-content" id="dropzoneContent">
+              <div class="upload-icon-wrapper">
+                <i data-lucide="upload-cloud" class="upload-icon"></i>
+              </div>
+              <h3 class="dropzone-heading">Drag & drop your resume or browse file</h3>
+              <p class="dropzone-sub">Supports PDF and Word DOCX formats (Maximum 5MB)</p>
+              <button type="button" class="btn btn-outline btn-sm btn-browse-action" id="browseFileBtn">
+                <i data-lucide="folder-open"></i>
+                <span>Browse File</span>
+              </button>
+            </div>
+
+            <!-- Selected File Preview -->
+            <div class="file-preview hidden" id="filePreview">
+              <div class="file-preview-info">
+                <div class="file-icon-box">
+                  <i data-lucide="file-text" class="file-icon"></i>
+                </div>
+                <div class="file-details">
+                  <div class="file-name-row">
+                    <span class="file-name" id="fileName">resume.pdf</span>
+                    <span class="badge badge-primary" id="fileFormatBadge">PDF</span>
+                  </div>
+                  <span class="file-size" id="fileSize">1.2 MB</span>
+                </div>
+              </div>
+              <div class="file-preview-actions">
+                <button type="button" class="btn btn-outline btn-xs" id="changeFileBtn">Change</button>
+                <button type="button" class="btn-remove-file" id="removeFileBtn" aria-label="Remove selected file">
+                  <i data-lucide="trash-2"></i>
+                </button>
+              </div>
+            </div>
+
+            <input 
+              type="file" 
+              id="resumeFileInput" 
+              class="file-input-hidden" 
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            >
+          </div>
+
+          <!-- Target Job Role Dropdown -->
+          <div class="form-group role-select-group">
+            <label for="targetRoleSelect" class="form-label">Target Job Role</label>
+            <div class="select-wrapper">
+              <select id="targetRoleSelect" class="form-select">
+                <option value="">Select target role for role-specific ATS matching...</option>
+                <option value="Software Developer" selected>Software Developer</option>
+                <option value="Frontend Developer">Frontend Developer</option>
+                <option value="Backend Developer">Backend Developer</option>
+                <option value="Full Stack Developer">Full Stack Developer</option>
+                <option value="Python Developer">Python Developer</option>
+                <option value="Java Developer">Java Developer</option>
+                <option value="C Developer">C Developer</option>
+                <option value="Data Analyst">Data Analyst</option>
+                <option value="Data Scientist">Data Scientist</option>
+                <option value="AI/ML Engineer">AI/ML Engineer</option>
+                <option value="Database Administrator">Database Administrator</option>
+                <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Analyze Action Button -->
+          <div class="upload-actions">
+            <button type="button" class="btn btn-primary btn-block btn-lg" id="analyzeResumeBtn">
+              <i data-lucide="file-search"></i>
+              <span class="btn-text">Analyze Resume</span>
+              <span class="btn-spinner hidden" id="analyzeSpinner">
+                <i data-lucide="loader" class="spinner-icon"></i>
+              </span>
+            </button>
+          </div>
+
+          <!-- Upload Progress Bar (hidden by default) -->
+          <div class="upload-progress hidden" id="uploadProgress">
+            <div class="progress-info-row">
+              <span class="progress-status" id="uploadStatusText">Scanning resume structure...</span>
+              <span class="progress-percentage" id="uploadPercentText">65%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="uploadProgressBar" style="width: 65%;"></div>
+            </div>
+          </div>
+
+          <!-- Error Alert Container with Retry Button -->
+          <div class="auth-error hidden" id="resumeError" role="alert" style="margin-top: 16px; border-left: 4px solid #EF4444; background: #FFF5F5; padding: 16px 20px; border-radius: 8px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <i data-lucide="alert-circle" class="alert-icon" style="color: #DC2626; flex-shrink: 0; margin-top: 2px;"></i>
+                <div>
+                  <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 700; color: #991B1B;">Resume Analysis Notice</h4>
+                  <span class="error-text" id="resumeErrorText" style="font-size: 13px; color: #7F1D1D; line-height: 1.4;">Please select a valid resume file before proceeding.</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" id="retryAnalyzeBtn" style="flex-shrink: 0;">
+                <i data-lucide="refresh-cw"></i>
+                <span>Retry Analysis</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Resume Results (hidden until analyzed) -->
+        <section class="resume-results hidden" id="resumeResults">
+          <!-- Candidate Overview Banner Card -->
+          <div class="resume-detail-panel" id="candidateInfoCard" style="border-left: 4.5px solid var(--color-primary, #FF5841);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 14px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
+                  <h2 id="candidateName" style="margin: 0; font-size: 22px; font-weight: 800; color: var(--color-text, #252525);">Candidate Profile</h2>
+                  <span class="badge badge-primary" id="targetRoleBadge">Software Developer</span>
+                </div>
+                <p id="candidateFileName" style="margin: 0; font-size: 13px; color: var(--color-text-muted, #74717A); font-weight: 500;">Document: sample_resume.pdf</p>
+              </div>
+              <span class="badge" id="analysisDateBadge" style="background: var(--color-primary-light, #FFF0ED); color: var(--color-primary, #FF5841); font-weight: 700;">Analyzed Today</span>
+            </div>
+            <div style="background: #FAF9FB; padding: 16px 20px; border-radius: var(--radius-md); border: 1px solid var(--color-border); margin-top: 10px;">
+              <h4 style="margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); font-weight: 700;">Executive Professional Summary</h4>
+              <p id="professionalSummary" style="margin: 0; font-size: 14px; line-height: 1.65; color: #374151;">Comprehensive professional background and technical capabilities evaluation.</p>
+            </div>
+          </div>
+
+          <!-- Overall Scores Grid (2-Column Row) -->
+          <div class="results-scores-row">
+            <!-- Overall Score Card -->
+            <div class="result-score-card">
+              <div class="score-card-header">
+                <span class="card-mini-title">OVERALL RESUME SCORE</span>
+                <span class="badge badge-primary" id="scoreRatingBadge">Strong Match</span>
+              </div>
+              <div class="score-circle-wrapper">
+                <div class="score-circle" id="resumeScoreCircle">
+                  <span class="score-val" id="resumeOverallScore">85</span>
+                  <span class="score-max">/100</span>
+                </div>
+              </div>
+              <p class="score-status-text" id="overallScoreStatusText">Strong profile. A few strategic tweaks will elevate ATS ranking.</p>
+            </div>
+
+            <!-- ATS Compatibility Card -->
+            <div class="result-score-card ats-card" id="atsScoreCard">
+              <div class="score-card-header">
+                <span class="card-mini-title">ATS COMPATIBILITY SCORE</span>
+                <span class="badge badge-success" id="atsBadge">High Compatibility</span>
+              </div>
+              <div class="score-bar-wrapper">
+                <div class="ats-score-display">
+                  <span class="ats-number" id="atsScoreValue">85%</span>
+                </div>
+                <div class="progress-track" style="height: 10px; border-radius: 9999px; background: #EAE6EA; overflow: hidden;">
+                  <div class="progress-fill" id="atsScoreFill" style="width: 85%; height: 100%; background: var(--gradient-brand); border-radius: 9999px;"></div>
+                </div>
+              </div>
+              <p class="ats-disclaimer">
+                <i data-lucide="info" class="icon-tiny" style="color: var(--color-primary); flex-shrink: 0;"></i>
+                <span>Calibrated against industry applicant tracking systems (Workday, Greenhouse, Lever, Taleo).</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- ATS Scoring Calculation Breakdown Panel -->
+          <div class="ats-breakdown-card" id="atsBreakdownPanel">
+            <div class="panel-header">
+              <div class="panel-header-left">
+                <div class="panel-icon-box icon-orange">
+                  <i data-lucide="sliders-horizontal"></i>
+                </div>
+                <div>
+                  <h3 class="panel-title">ATS Scoring Calculation Breakdown</h3>
+                  <p class="panel-desc">Transparent 100-point model evaluated against target role criteria</p>
+                </div>
+              </div>
+              <span class="badge badge-primary">100-Point Formula</span>
+            </div>
+            <div class="score-breakdown-grid" id="scoreBreakdownGrid">
+              <!-- Item 1: Keyword Alignment -->
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>Role Keywords</span>
+                  <span class="breakdown-score-badge" id="breakdownKeywordScore">34 / 40</span>
+                </div>
+                <div class="breakdown-weight">Weight: 40%</div>
+                <div class="breakdown-track">
+                  <div class="breakdown-fill" id="breakdownKeywordFill" style="width: 85%;"></div>
+                </div>
+              </div>
+              <!-- Item 2: Experience Relevance -->
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>Work Experience</span>
+                  <span class="breakdown-score-badge" id="breakdownExpScore">21 / 25</span>
+                </div>
+                <div class="breakdown-weight">Weight: 25%</div>
+                <div class="breakdown-track">
+                  <div class="breakdown-fill" id="breakdownExpFill" style="width: 84%;"></div>
+                </div>
+              </div>
+              <!-- Item 3: Skills Depth -->
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>Skills Depth</span>
+                  <span class="breakdown-score-badge" id="breakdownSkillsScore">17 / 20</span>
+                </div>
+                <div class="breakdown-weight">Weight: 20%</div>
+                <div class="breakdown-track">
+                  <div class="breakdown-fill" id="breakdownSkillsFill" style="width: 85%;"></div>
+                </div>
+              </div>
+              <!-- Item 4: Education & Credentials -->
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>Education</span>
+                  <span class="breakdown-score-badge" id="breakdownEduScore">9 / 10</span>
+                </div>
+                <div class="breakdown-weight">Weight: 10%</div>
+                <div class="breakdown-track">
+                  <div class="breakdown-fill" id="breakdownEduFill" style="width: 90%;"></div>
+                </div>
+              </div>
+              <!-- Item 5: ATS Formatting & Readability -->
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>ATS Formatting</span>
+                  <span class="breakdown-score-badge" id="breakdownFormatScore">4 / 5</span>
+                </div>
+                <div class="breakdown-weight">Weight: 5%</div>
+                <div class="breakdown-track">
+                  <div class="breakdown-fill" id="breakdownFormatFill" style="width: 80%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="scoring-explanation-box">
+              <i data-lucide="info" class="icon-inline" style="color: var(--color-primary); flex-shrink: 0; margin-top: 2px;"></i>
+              <span id="scoringExplanationText">The ATS score is calculated out of 100 using 5 weighted categories: Role Keyword Alignment (40%), Experience Relevance (25%), Technical Skills Depth (20%), Education & Credentials (10%), and ATS Readability (5%). Points are awarded strictly for verified credentials present in the document.</span>
+            </div>
+          </div>
+
+          <!-- Skills & Keyword Frequency Section (3 Separate Clean Cards) -->
+          <div class="skills-breakdown-section">
+            <div class="section-heading-row">
+              <div>
+                <h3 class="section-main-title">Skills & Keyword Frequency Analysis</h3>
+                <p class="section-main-subtitle">Granular comparison between verified candidate skills and role-targeted expectations.</p>
+              </div>
+              <div class="skills-summary-pill" id="skillsSummaryPill" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- 3 Separate Cards in CSS Grid -->
+            <div class="skills-cards-grid">
+              <!-- Card 1: Detected Technical Skills -->
+              <div class="skill-analysis-card card-detected">
+                <div class="skill-card-top">
+                  <div class="skill-card-title-group">
+                    <div class="skill-card-icon">
+                      <i data-lucide="code-2"></i>
+                    </div>
+                    <div>
+                      <h4 class="skill-card-title">Detected Technical Skills</h4>
+                      <p class="skill-card-desc">Verified in uploaded resume</p>
+                    </div>
+                  </div>
+                  <span class="skill-count-badge badge-green" id="detectedSkillsCount">0 Skills</span>
+                </div>
+                <div class="skill-badges-container" id="detectedSkillsList">
+                  <span class="skill-badge-empty">Loading verified skills...</span>
+                </div>
+              </div>
+
+              <!-- Card 2: Matched Role Keywords -->
+              <div class="skill-analysis-card card-matched">
+                <div class="skill-card-top">
+                  <div class="skill-card-title-group">
+                    <div class="skill-card-icon">
+                      <i data-lucide="check-check"></i>
+                    </div>
+                    <div>
+                      <h4 class="skill-card-title">Matched Role Keywords</h4>
+                      <p class="skill-card-desc">Matches target role requirements</p>
+                    </div>
+                  </div>
+                  <span class="skill-count-badge badge-orange" id="matchedKeywordsCount">0 Matched</span>
+                </div>
+                <div class="skill-badges-container" id="matchedKeywordsList">
+                  <span class="skill-badge-empty">Loading matched keywords...</span>
+                </div>
+              </div>
+
+              <!-- Card 3: Missing Recommended Keywords -->
+              <div class="skill-analysis-card card-missing">
+                <div class="skill-card-top">
+                  <div class="skill-card-title-group">
+                    <div class="skill-card-icon">
+                      <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <div>
+                      <h4 class="skill-card-title">Missing Recommended Keywords</h4>
+                      <p class="skill-card-desc">Absent from resume for this role</p>
+                    </div>
+                  </div>
+                  <span class="skill-count-badge badge-amber" id="missingKeywordsCount">0 Missing</span>
+                </div>
+                <div class="skill-badges-container" id="missingSkillsList">
+                  <span class="skill-badge-empty">Loading recommended keywords...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section-by-Section In-Depth Analysis (3-Card Grid) -->
+          <div class="section-analysis-grid">
+            <!-- Work Experience Analysis -->
+            <div class="resume-detail-panel">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-orange">
+                    <i data-lucide="briefcase"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Work Experience Analysis</h3>
+                    <p class="panel-desc">Impact, progression & metrics</p>
+                  </div>
+                </div>
+              </div>
+              <p id="experienceAnalysisText" style="font-size: 14px; color: #374151; line-height: 1.65; margin: 0;">Evaluating work history and quantifiable outcomes...</p>
+            </div>
+
+            <!-- Project Portfolio Analysis -->
+            <div class="resume-detail-panel">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-violet">
+                    <i data-lucide="code"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Project Portfolio & Complexity</h3>
+                    <p class="panel-desc">Architectural depth & repos</p>
+                  </div>
+                </div>
+              </div>
+              <p id="projectAnalysisText" style="font-size: 14px; color: #374151; line-height: 1.65; margin: 0;">Evaluating technical depth and project implementations...</p>
+            </div>
+
+            <!-- Education & Background Analysis -->
+            <div class="resume-detail-panel">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-green">
+                    <i data-lucide="graduation-cap"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Education & Credentials</h3>
+                    <p class="panel-desc">Degrees, certifications & coursework</p>
+                  </div>
+                </div>
+              </div>
+              <p id="educationAnalysisText" style="font-size: 14px; color: #374151; line-height: 1.65; margin: 0;">Evaluating degrees, credentials, and technical coursework...</p>
+            </div>
+          </div>
+
+          <!-- Strengths vs Weaknesses (2-Column Grid) -->
+          <div class="analysis-two-col">
+            <!-- Key Strengths -->
+            <div class="resume-detail-panel" id="strengthsCard">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-green">
+                    <i data-lucide="award"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Key Competitive Strengths</h3>
+                    <p class="panel-desc">Distinctive profile advantages</p>
+                  </div>
+                </div>
+              </div>
+              <ul class="analysis-check-list" id="strengthsList">
+                <li class="check-item check-pass">
+                  <i data-lucide="check-circle" class="check-icon" style="color: #10B981;"></i>
+                  <span>Evaluating candidate strengths...</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Critical Weaknesses / Gaps -->
+            <div class="resume-detail-panel" id="weaknessesCard">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-amber">
+                    <i data-lucide="alert-triangle"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Critical Areas to Address</h3>
+                    <p class="panel-desc">High-priority resume improvements</p>
+                  </div>
+                </div>
+              </div>
+              <ul class="analysis-check-list" id="weaknessesList">
+                <li class="check-item check-warning">
+                  <i data-lucide="alert-circle" class="check-icon" style="color: #F59E0B;"></i>
+                  <span>Evaluating potential resume gaps...</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Actionable Improvements & Career Recommendations (2-Column Grid) -->
+          <div class="analysis-two-col">
+            <!-- Concrete Resume Improvements -->
+            <div class="resume-detail-panel">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-orange">
+                    <i data-lucide="sparkles"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Prioritized Resume Line-Item Changes</h3>
+                    <p class="panel-desc">Google X-Y-Z formula bullet points</p>
+                  </div>
+                </div>
+              </div>
+              <ol class="action-items-list" id="improvementsList">
+                <li>Analyzing actionable resume improvements...</li>
+              </ol>
+            </div>
+
+            <!-- Strategic Career Recommendations -->
+            <div class="resume-detail-panel">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <div class="panel-icon-box icon-violet">
+                    <i data-lucide="compass"></i>
+                  </div>
+                  <div>
+                    <h3 class="panel-title">Strategic Interview & Career Guidance</h3>
+                    <p class="panel-desc">Targeted prep for this position</p>
+                  </div>
+                </div>
+              </div>
+              <ol class="action-items-list" id="recommendationsList">
+                <li>Preparing strategic career recommendations...</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Keywords Density & ATS Frequency Table -->
+          <div class="resume-detail-panel" id="keywordsAnalysis">
+            <div class="panel-header">
+              <div class="panel-header-left">
+                <div class="panel-icon-box icon-orange">
+                  <i data-lucide="target"></i>
+                </div>
+                <div>
+                  <h3 class="panel-title">Keyword Density & ATS Frequency Matrix</h3>
+                  <p class="panel-desc">Presence status and keyword targeting recommendations</p>
+                </div>
+              </div>
+            </div>
+            <div class="keywords-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Keyword</th>
+                    <th>Category</th>
+                    <th>Status in Resume</th>
+                    <th>Recommendation</th>
+                  </tr>
+                </thead>
+                <tbody id="keywordsTableBody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="resume-results-actions">
+            <button type="button" class="btn btn-primary" id="downloadResumeReportBtn">
+              <i data-lucide="download"></i>
+              <span>Download Report</span>
+            </button>
+            <a href="interview-setup.html" class="btn btn-secondary">
+              <i data-lucide="play-circle"></i>
+              <span>Practice Mock Interview for this Role</span>
+            </a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/resume.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Community Leaderboard - Compare your interview scores, rankings, and preparation activity against peers.">
+  <title>Leaderboard - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Leaderboard</span>
+                      </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header header-with-actions">
+        <div class="header-titles">
+          <h1 class="page-title">Community Leaderboard</h1>
+          <p class="page-subtitle">Track your rankings and celebrate your interview preparation milestones with the AVENIR AI community.</p>
+        </div>
+
+        <div class="privacy-note-badge">
+          <i data-lucide="shield-check"></i>
+          <span>Only users who opted in are shown</span>
+        </div>
+      </header>
+
+      <!-- Top 3 Podium Display -->
+      <section class="podium-section" aria-label="Top 3 Interview Candidates">
+        <!-- Rank 2: Silver -->
+        <div class="podium-card podium-silver">
+          <div class="podium-rank-badge rank-2">2</div>
+          <div class="podium-avatar">
+            <span>SC</span>
+          </div>
+          <h3 class="podium-name">Sarah Chen</h3>
+          <span class="podium-role">Full Stack Engineer</span>
+          <div class="podium-stats">
+            <div class="podium-stat">
+              <span class="stat-num">95%</span>
+              <span class="stat-lbl">Avg Score</span>
+            </div>
+            <div class="podium-stat">
+              <span class="stat-num">18</span>
+              <span class="stat-lbl">Sessions</span>
+            </div>
+          </div>
+          <div class="podium-pillar pillar-silver">
+            <span class="pillar-label">SILVER</span>
+          </div>
+        </div>
+
+        <!-- Rank 1: Gold (Elevated center) -->
+        <div class="podium-card podium-gold">
+          <div class="crown-icon-box">
+            <i data-lucide="trophy"></i>
+          </div>
+          <div class="podium-rank-badge rank-1">1</div>
+          <div class="podium-avatar avatar-gold">
+            <span>AR</span>
+          </div>
+          <h3 class="podium-name">Alex Rivera</h3>
+          <span class="podium-role">AI / ML Engineer</span>
+          <div class="podium-stats">
+            <div class="podium-stat">
+              <span class="stat-num">98%</span>
+              <span class="stat-lbl">Avg Score</span>
+            </div>
+            <div class="podium-stat">
+              <span class="stat-num">24</span>
+              <span class="stat-lbl">Sessions</span>
+            </div>
+          </div>
+          <div class="podium-pillar pillar-gold">
+            <span class="pillar-label">CHAMPION</span>
+          </div>
+        </div>
+
+        <!-- Rank 3: Bronze -->
+        <div class="podium-card podium-bronze">
+          <div class="podium-rank-badge rank-3">3</div>
+          <div class="podium-avatar">
+            <span>MK</span>
+          </div>
+          <h3 class="podium-name">Michael Kim</h3>
+          <span class="podium-role">Backend Developer</span>
+          <div class="podium-stats">
+            <div class="podium-stat">
+              <span class="stat-num">93%</span>
+              <span class="stat-lbl">Avg Score</span>
+            </div>
+            <div class="podium-stat">
+              <span class="stat-num">15</span>
+              <span class="stat-lbl">Sessions</span>
+            </div>
+          </div>
+          <div class="podium-pillar pillar-bronze">
+            <span class="pillar-label">BRONZE</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leaderboard Full Table Card -->
+      <section class="dashboard-panel panel-table leaderboard-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <i data-lucide="list-ordered" class="panel-icon"></i>
+            <h3 class="panel-title">Community Rankings</h3>
+          </div>
+          <span class="panel-meta">Updated Hourly</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table leaderboard-table">
+            <thead>
+              <tr>
+                <th class="rank-col">Rank</th>
+                <th>Candidate</th>
+                <th>Interviews</th>
+                <th>Avg Score</th>
+                <th>Best Score</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <!-- Top candidates populated dynamically or rendered -->
+              <tr>
+                <td class="rank-col"><span class="rank-circle gold">1</span></td>
+                <td>
+                  <div class="table-user">
+                    <div class="table-avatar">AR</div>
+                    <div class="table-user-meta">
+                      <span class="table-user-name">Alex Rivera</span>
+                      <span class="table-user-sub">AI / ML Engineer</span>
+                    </div>
+                  </div>
+                </td>
+                <td>24</td>
+                <td><span class="score-pill good">98%</span></td>
+                <td><strong>100%</strong></td>
+              </tr>
+              <tr>
+                <td class="rank-col"><span class="rank-circle silver">2</span></td>
+                <td>
+                  <div class="table-user">
+                    <div class="table-avatar">SC</div>
+                    <div class="table-user-meta">
+                      <span class="table-user-name">Sarah Chen</span>
+                      <span class="table-user-sub">Full Stack Engineer</span>
+                    </div>
+                  </div>
+                </td>
+                <td>18</td>
+                <td><span class="score-pill good">95%</span></td>
+                <td><strong>98%</strong></td>
+              </tr>
+              <tr>
+                <td class="rank-col"><span class="rank-circle bronze">3</span></td>
+                <td>
+                  <div class="table-user">
+                    <div class="table-avatar">MK</div>
+                    <div class="table-user-meta">
+                      <span class="table-user-name">Michael Kim</span>
+                      <span class="table-user-sub">Backend Developer</span>
+                    </div>
+                  </div>
+                </td>
+                <td>15</td>
+                <td><span class="score-pill good">93%</span></td>
+                <td><strong>96%</strong></td>
+              </tr>
+
+              <!-- Current User Row (Highlighted) -->
+              <tr class="current-user-row" id="currentUserLeaderboardRow">
+                <td class="rank-col"><span class="rank-circle you" id="currentUserRank">12</span></td>
+                <td>
+                  <div class="table-user">
+                    <div class="table-avatar you-avatar" id="currentUserAvatarLetter">U</div>
+                    <div class="table-user-meta">
+                      <span class="table-user-name" id="currentUserName">You</span>
+                      <span class="badge badge-accent">Current User</span>
+                    </div>
+                  </div>
+                </td>
+                <td id="currentUserInterviews">12</td>
+                <td><span class="score-pill good" id="currentUserAvgScore">88%</span></td>
+                <td><strong id="currentUserBestScore">94%</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Empty State -->
+      <section class="empty-state-card hidden" id="leaderboardEmptyState">
+        <i data-lucide="trophy" class="empty-state-icon"></i>
+        <h3 class="empty-title">Leaderboard Currently Initializing</h3>
+        <p class="empty-desc">Enable leaderboard opt-in within Settings and complete a mock interview to rank here.</p>
+        <a href="settings.html" class="btn btn-outline">Check Settings</a>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/leaderboard.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

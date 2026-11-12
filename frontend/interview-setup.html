@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Configure your AI mock interview session on AVENIR AI. Choose your target profession, assessment category, difficulty level, and question count.">
+  <title>Configure Interview - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/interview.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item active">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Interview Setup</span>
+                      </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <div class="header-titles">
+          <h1 class="page-title">Configure Your Interview</h1>
+          <p class="page-subtitle">Customize the AI interviewer to simulate realistic technical, behavioral, or role-specific questions.</p>
+        </div>
+      </header>
+
+      <!-- Setup Container -->
+      <div class="setup-container">
+        <!-- 5-Step Progress Stepper -->
+        <div class="stepper-track" aria-label="Interview configuration steps">
+          <div class="stepper-step active" id="indicator1" data-step="1">
+            <div class="step-circle">
+              <span class="step-num">01</span>
+              <i data-lucide="check" class="step-check"></i>
+            </div>
+            <span class="step-label">Job Role</span>
+          </div>
+          <div class="stepper-connector" id="line1"></div>
+
+          <div class="stepper-step" id="indicator2" data-step="2">
+            <div class="step-circle">
+              <span class="step-num">02</span>
+              <i data-lucide="check" class="step-check"></i>
+            </div>
+            <span class="step-label">Interview Type</span>
+          </div>
+          <div class="stepper-connector" id="line2"></div>
+
+          <div class="stepper-step" id="indicator3" data-step="3">
+            <div class="step-circle">
+              <span class="step-num">03</span>
+              <i data-lucide="check" class="step-check"></i>
+            </div>
+            <span class="step-label">Difficulty</span>
+          </div>
+          <div class="stepper-connector" id="line3"></div>
+
+          <div class="stepper-step" id="indicator4" data-step="4">
+            <div class="step-circle">
+              <span class="step-num">04</span>
+              <i data-lucide="check" class="step-check"></i>
+            </div>
+            <span class="step-label">Experience</span>
+          </div>
+          <div class="stepper-connector" id="line4"></div>
+
+          <div class="stepper-step" id="indicator5" data-step="5">
+            <div class="step-circle">
+              <span class="step-num">05</span>
+              <i data-lucide="check" class="step-check"></i>
+            </div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Role Selection -->
+        <section class="setup-step-content active" id="step1">
+          <div class="step-header">
+            <h2 class="step-heading">Select Your Job Role</h2>
+            <p class="step-description">Choose the target profession for your mock interview.</p>
+          </div>
+
+          <div class="role-grid" id="roleGrid">
+            <button type="button" class="role-card selected" data-role="Software Developer">
+              <i data-lucide="code-2" class="role-icon"></i>
+              <span class="role-title">Software Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Frontend Developer">
+              <i data-lucide="layout" class="role-icon"></i>
+              <span class="role-title">Frontend Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Backend Developer">
+              <i data-lucide="server" class="role-icon"></i>
+              <span class="role-title">Backend Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Full Stack Developer">
+              <i data-lucide="layers" class="role-icon"></i>
+              <span class="role-title">Full Stack Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Python Developer">
+              <i data-lucide="file-code" class="role-icon"></i>
+              <span class="role-title">Python Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Java Developer">
+              <i data-lucide="coffee" class="role-icon"></i>
+              <span class="role-title">Java Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="C Developer">
+              <i data-lucide="cpu" class="role-icon"></i>
+              <span class="role-title">C Developer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Data Analyst">
+              <i data-lucide="pie-chart" class="role-icon"></i>
+              <span class="role-title">Data Analyst</span>
+            </button>
+            <button type="button" class="role-card" data-role="Data Scientist">
+              <i data-lucide="binary" class="role-icon"></i>
+              <span class="role-title">Data Scientist</span>
+            </button>
+            <button type="button" class="role-card" data-role="AI/ML Engineer">
+              <i data-lucide="brain-circuit" class="role-icon"></i>
+              <span class="role-title">AI/ML Engineer</span>
+            </button>
+            <button type="button" class="role-card" data-role="Database Administrator">
+              <i data-lucide="database" class="role-icon"></i>
+              <span class="role-title">Database Administrator</span>
+            </button>
+            <button type="button" class="role-card" data-role="Cybersecurity Analyst">
+              <i data-lucide="shield-check" class="role-icon"></i>
+              <span class="role-title">Cybersecurity Analyst</span>
+            </button>
+            <button type="button" class="role-card role-other" data-role="Other">
+              <i data-lucide="sparkles" class="role-icon"></i>
+              <span class="role-title">Other Role</span>
+            </button>
+          </div>
+
+          <!-- Custom Role Input (shown when "Other" selected) -->
+          <div class="custom-role-container hidden" id="customRoleBox">
+            <label for="customRoleInput" class="form-label">Enter Custom Role Title</label>
+            <div class="input-wrapper">
+              <i data-lucide="edit-3" class="input-icon"></i>
+              <input type="text" id="customRoleInput" class="form-input" placeholder="e.g. Cloud Architect, DevOps Engineer, QA Engineer">
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <div></div>
+            <button type="button" class="btn btn-primary" id="step1NextBtn">
+              <span>Next Step</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- Step 2: Category Selection -->
+        <section class="setup-step-content hidden" id="step2">
+          <div class="step-header">
+            <h2 class="step-heading">Choose Your Interview Round</h2>
+            <p class="step-description">Select the exact type of interview you want to practice.</p>
+          </div>
+
+          <div class="config-options" id="categoryOptions">
+            <div class="option-card" data-category="HR Interview">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">HR Interview</h3>
+                <p class="option-desc">General background, workplace scenarios, culture fit, and soft skills.</p>
+              </div>
+            </div>
+
+            <div class="option-card selected" data-category="Technical Interview">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Technical Interview</h3>
+                <p class="option-desc">Deep technical architecture, core language concepts, and framework design.</p>
+              </div>
+            </div>
+
+            <div class="option-card" data-category="Coding Interview">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Coding Interview</h3>
+                <p class="option-desc">Algorithms, data structures, edge-case analysis, and code walkthroughs.</p>
+              </div>
+            </div>
+
+            <div class="option-card" data-category="Behavioral Interview">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Behavioral Interview</h3>
+                <p class="option-desc">STAR method questions focusing on conflict resolution, leadership, and teamwork.</p>
+              </div>
+            </div>
+
+            <div class="option-card" data-category="Domain-Specific Interview">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Domain-Specific Interview</h3>
+                <p class="option-desc">Specialized scenarios tailored explicitly to your chosen job role and industry.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category selection summary -->
+          <div class="category-summary" id="categorySummary">
+            <span class="category-summary-label">Selected Interview Round</span>
+            <span class="category-summary-value" id="categorySelectedLabel">Technical Interview</span>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-outline" id="step2BackBtn">
+              <i data-lucide="arrow-left"></i>
+              <span>Back</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="step2NextBtn">
+              <span>Next Step</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- Step 3: Difficulty Selection -->
+        <section class="setup-step-content hidden" id="step3">
+          <div class="step-header">
+            <h2 class="step-heading">Difficulty Level</h2>
+            <p class="step-description">Tailor the challenge level of the questions asked by the AI.</p>
+          </div>
+
+          <div class="config-options" id="difficultyOptions">
+            <div class="option-card" data-difficulty="Easy">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Easy</h3>
+                <p class="option-desc">Fundamental concepts, basic syntax, foundational knowledge and standard definitions.</p>
+              </div>
+            </div>
+
+            <div class="option-card selected" data-difficulty="Medium">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Medium</h3>
+                <p class="option-desc">Practical problem-solving, implementation trade-offs, and intermediate system patterns.</p>
+              </div>
+            </div>
+
+            <div class="option-card" data-difficulty="Hard">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Hard</h3>
+                <p class="option-desc">Advanced edge cases, large-scale distributed systems, optimizations, and deep debugging.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-outline" id="step3BackBtn">
+              <i data-lucide="arrow-left"></i>
+              <span>Back</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="step3NextBtn">
+              <span>Next Step</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- Step 4: Experience Level Selection -->
+        <section class="setup-step-content hidden" id="step4">
+          <div class="step-header">
+            <h2 class="step-heading">Experience Level</h2>
+            <p class="step-description">Select your career stage so questions match appropriate industry expectations.</p>
+          </div>
+
+          <div class="config-options" id="experienceOptions">
+            <div class="option-card" data-experience="Fresher">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Fresher (0 - 1 years)</h3>
+                <p class="option-desc">Entry-level candidates, recent graduates, or career transitioners.</p>
+              </div>
+            </div>
+
+            <div class="option-card selected" data-experience="Intermediate">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Intermediate (2 - 4 years)</h3>
+                <p class="option-desc">Practicing software engineers with hands-on production application experience.</p>
+              </div>
+            </div>
+
+            <div class="option-card" data-experience="Experienced">
+              <div class="option-radio"></div>
+              <div class="option-content">
+                <h3 class="option-title">Experienced (5+ years)</h3>
+                <p class="option-desc">Senior engineers and tech leads tackling high-level design and team leadership.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-outline" id="step4BackBtn">
+              <i data-lucide="arrow-left"></i>
+              <span>Back</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="step4NextBtn">
+              <span>Next Step</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- Step 5: Review & Start -->
+        <section class="setup-step-content hidden" id="step5">
+          <div class="step-header">
+            <h2 class="step-heading">Review & Start</h2>
+            <p class="step-description">Review your configuration and launch the mock interview.</p>
+          </div>
+
+          <div class="interview-summary">
+            <!-- Session Configuration Card -->
+            <div class="summary-card">
+              <h3 class="summary-card-title">
+                <i data-lucide="check-circle" style="color:var(--color-primary,#FF5841);width:20px;height:20px;"></i>
+                <span>Session Configuration</span>
+              </h3>
+              <div class="summary-grid">
+                <!-- Target Role -->
+                <div class="summary-item">
+                  <div class="summary-icon-box">
+                    <i data-lucide="briefcase"></i>
+                  </div>
+                  <div class="summary-content">
+                    <div class="summary-label-row">
+                      <span class="summary-label">Target Role</span>
+                      <button type="button" class="summary-edit-btn" onclick="initInterviewSetupWizard._showStep(1)" aria-label="Edit Target Role">
+                        <i data-lucide="edit-2" style="width:12px;height:12px;"></i>
+                        <span>Edit</span>
+                      </button>
+                    </div>
+                    <span class="summary-value" id="summaryRole">Software Developer</span>
+                  </div>
+                </div>
+
+                <!-- Interview Category -->
+                <div class="summary-item">
+                  <div class="summary-icon-box">
+                    <i data-lucide="layers"></i>
+                  </div>
+                  <div class="summary-content">
+                    <div class="summary-label-row">
+                      <span class="summary-label">Category</span>
+                      <button type="button" class="summary-edit-btn" onclick="initInterviewSetupWizard._showStep(2)" aria-label="Edit Category">
+                        <i data-lucide="edit-2" style="width:12px;height:12px;"></i>
+                        <span>Edit</span>
+                      </button>
+                    </div>
+                    <span class="summary-value" id="summaryCategory">Technical Interview</span>
+                  </div>
+                </div>
+
+                <!-- Difficulty -->
+                <div class="summary-item">
+                  <div class="summary-icon-box">
+                    <i data-lucide="bar-chart-2"></i>
+                  </div>
+                  <div class="summary-content">
+                    <div class="summary-label-row">
+                      <span class="summary-label">Difficulty</span>
+                      <button type="button" class="summary-edit-btn" onclick="initInterviewSetupWizard._showStep(3)" aria-label="Edit Difficulty">
+                        <i data-lucide="edit-2" style="width:12px;height:12px;"></i>
+                        <span>Edit</span>
+                      </button>
+                    </div>
+                    <span class="summary-value" id="summaryDifficulty">Medium</span>
+                  </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="summary-item">
+                  <div class="summary-icon-box">
+                    <i data-lucide="award"></i>
+                  </div>
+                  <div class="summary-content">
+                    <div class="summary-label-row">
+                      <span class="summary-label">Experience</span>
+                      <button type="button" class="summary-edit-btn" onclick="initInterviewSetupWizard._showStep(4)" aria-label="Edit Experience">
+                        <i data-lucide="edit-2" style="width:12px;height:12px;"></i>
+                        <span>Edit</span>
+                      </button>
+                    </div>
+                    <span class="summary-value" id="summaryExperience">Intermediate (2 - 4 years)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Parameters Card -->
+            <div class="params-card">
+              <h3 class="summary-card-title">
+                <i data-lucide="sliders" style="color:var(--color-primary,#FF5841);width:20px;height:20px;"></i>
+                <span>Interview Parameters</span>
+              </h3>
+
+              <!-- Question Count Selection Cards -->
+              <div class="form-group">
+                <label for="questionCountSelect" class="form-label">Number of Questions</label>
+                <div class="question-count-cards" id="questionCountOptions">
+                  <button type="button" class="count-card count-btn" data-count="5">
+                    <span class="count-number">5</span>
+                    <span class="count-title">Quick Quiz</span>
+                    <span class="count-hint">~10 mins</span>
+                  </button>
+                  <button type="button" class="count-card count-btn selected" data-count="10">
+                    <span class="count-number">10</span>
+                    <span class="count-title">Standard</span>
+                    <span class="count-hint">~20 mins</span>
+                  </button>
+                  <button type="button" class="count-card count-btn" data-count="15">
+                    <span class="count-number">15</span>
+                    <span class="count-title">In-Depth</span>
+                    <span class="count-hint">~30 mins</span>
+                  </button>
+                  <button type="button" class="count-card count-btn" data-count="20">
+                    <span class="count-number">20</span>
+                    <span class="count-title">Full Mock</span>
+                    <span class="count-hint">~45 mins</span>
+                  </button>
+                </div>
+                <input type="hidden" id="questionCountSelect" value="10">
+              </div>
+
+              <!-- Timer Options -->
+              <div class="timer-controls">
+                <div class="timer-toggle-row">
+                  <label class="toggle-switch-label" for="enableTimer">
+                    <input type="checkbox" id="enableTimer" checked>
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">Enable Per-Question Countdown</span>
+                  </label>
+                </div>
+                <div class="duration-select-row" id="timerDurationRow">
+                  <label for="timerDuration" class="form-label">Answer Duration per Question</label>
+                  <select id="timerDuration" class="form-select">
+                    <option value="120">2 Minutes per question</option>
+                    <option value="180" selected>3 Minutes per question (Recommended)</option>
+                    <option value="300">5 Minutes per question</option>
+                    <option value="600">10 Minutes per question</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn btn-outline" id="step5BackBtn">
+              <i data-lucide="arrow-left"></i>
+              <span>Back</span>
+            </button>
+            <button type="button" class="btn btn-primary btn-lg" id="startInterviewBtn">
+              <span>Start Interview</span>
+              <i data-lucide="play-circle"></i>
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/interview-setup.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

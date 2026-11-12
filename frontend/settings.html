@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AVENIR AI Settings - Configure practice goals, reminder notifications, privacy preferences, and account security.">
+  <title>Settings - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item active">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="breadcrumbs">
+          <a href="dashboard.html">Dashboard</a>
+          <i data-lucide="chevron-right" class="crumb-separator"></i>
+          <span class="crumb-current">Settings</span>
+                      </div>
+      </div>
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <div class="header-titles">
+          <h1 class="page-title">Settings</h1>
+          <p class="page-subtitle">Configure practice goals, AI behavior preferences, notification triggers, and account security.</p>
+        </div>
+      </header>
+
+      <!-- Settings Notifications & Status -->
+      <div class="settings-container">
+        <div class="auth-success hidden" id="settingsAlertSuccess" role="status">
+          <i data-lucide="check-circle" class="alert-icon success-icon"></i>
+          <span class="success-text" id="settingsSuccessText">Settings updated successfully!</span>
+        </div>
+        <div class="auth-error hidden" id="settingsAlertError" role="alert">
+          <i data-lucide="alert-circle" class="alert-icon"></i>
+          <span class="error-text" id="settingsErrorText">Failed to save settings. Please try again.</span>
+        </div>
+
+        <form id="settingsForm" class="settings-main-form">
+
+          <!-- Section 1: Practice Goals -->
+          <section class="dashboard-panel settings-section">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i data-lucide="target" class="panel-icon icon-orange"></i>
+                <h3 class="panel-title">Practice Goals</h3>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="dailyGoalInput" class="form-label">Daily Question Goal</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="check-circle-2" class="input-icon"></i>
+                    <input 
+                      type="number" 
+                      id="dailyGoalInput" 
+                      name="dailyGoal" 
+                      class="form-input" 
+                      min="1" 
+                      max="30" 
+                      value="5" 
+                      required
+                    >
+                  </div>
+                  <p class="form-hint">Target number of questions to answer each day.</p>
+                </div>
+
+                <div class="form-group">
+                  <label for="weeklyTargetInput" class="form-label">Weekly Mock Interviews Target</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="calendar" class="input-icon"></i>
+                    <input 
+                      type="number" 
+                      id="weeklyTargetInput" 
+                      name="weeklyTarget" 
+                      class="form-input" 
+                      min="1" 
+                      max="15" 
+                      value="3" 
+                      required
+                    >
+                  </div>
+                  <p class="form-hint">Full length mock interview sessions targeted per week.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 2: Preferences -->
+          <section class="dashboard-panel settings-section">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i data-lucide="sliders" class="panel-icon icon-blue"></i>
+                <h3 class="panel-title">Interview & Community Preferences</h3>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="toggles-list">
+                <!-- Leaderboard Opt-in -->
+                <div class="toggle-setting-row">
+                  <div class="toggle-info">
+                    <span class="toggle-title">Show Profile on Community Leaderboard</span>
+                    <span class="toggle-sub">Allow your average scores and rankings to be displayed to other community members.</span>
+                  </div>
+                  <label class="toggle-switch-label" for="leaderboardOptIn">
+                    <input type="checkbox" id="leaderboardOptIn" name="leaderboardOptIn" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Interview Timer -->
+                <div class="toggle-setting-row">
+                  <div class="toggle-info">
+                    <span class="toggle-title">Interview Countdown Timer</span>
+                    <span class="toggle-sub">Enable real-time countdown timer during live interview room sessions.</span>
+                  </div>
+                  <label class="toggle-switch-label" for="timerToggle">
+                    <input type="checkbox" id="timerToggle" name="timerToggle" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Speech Recognition Default -->
+                <div class="toggle-setting-row">
+                  <div class="toggle-info">
+                    <span class="toggle-title">Default to Voice Input Mode</span>
+                    <span class="toggle-sub">Automatically enable speech recognition microphone when entering interview room.</span>
+                  </div>
+                  <label class="toggle-switch-label" for="voiceDefaultToggle">
+                    <input type="checkbox" id="voiceDefaultToggle" name="voiceDefaultToggle">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 3: Reminders -->
+          <section class="dashboard-panel settings-section">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <i data-lucide="bell" class="panel-icon icon-purple"></i>
+                <h3 class="panel-title">Notifications & Reminders</h3>
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div class="toggles-list">
+                <div class="toggle-setting-row">
+                  <div class="toggle-info">
+                    <span class="toggle-title">Daily Practice In-App Reminders</span>
+                    <span class="toggle-sub">Receive daily reminders to maintain your preparation streak.</span>
+                  </div>
+                  <label class="toggle-switch-label" for="reminderDaily">
+                    <input type="checkbox" id="reminderDaily" name="reminderDaily" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="toggle-setting-row">
+                  <div class="toggle-info">
+                    <span class="toggle-title">Weekly Performance Digest Email</span>
+                    <span class="toggle-sub">Receive an automated summary of your scores, study roadmap, and streak status.</span>
+                  </div>
+                  <label class="toggle-switch-label" for="reminderEmail">
+                    <input type="checkbox" id="reminderEmail" name="reminderEmail" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Save Settings Action Button -->
+          <div class="settings-actions">
+            <button type="submit" class="btn btn-primary btn-lg" id="saveSettingsBtn">
+              <span class="btn-text">Save Settings</span>
+              <span class="btn-spinner hidden" id="saveSettingsSpinner">
+                <i data-lucide="loader" class="spinner-icon"></i>
+              </span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Section 4: Account Security & Danger Zone -->
+        <section class="dashboard-panel settings-section">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <i data-lucide="lock" class="panel-icon icon-orange"></i>
+              <h3 class="panel-title">Account Security</h3>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <!-- Change Password Form -->
+            <form id="changePasswordForm" class="security-form">
+              <h4 class="subhead-title">Change Password</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="currentPassword" class="form-label">Current Password</label>
+                  <input type="password" id="currentPassword" class="form-input" placeholder="Current password" required>
+                </div>
+                <div class="form-group">
+                  <label for="newPassword" class="form-label">New Password (8+ characters)</label>
+                  <input type="password" id="newPassword" class="form-input" placeholder="New password" minlength="8" required>
+                </div>
+                <div class="form-group">
+                  <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                  <input type="password" id="confirmNewPassword" class="form-input" placeholder="Confirm new password" minlength="8" required>
+                </div>
+              </div>
+
+              <div class="auth-success hidden" id="passwordAlertSuccess" role="status">
+                <span class="success-text" id="passwordSuccessText">Password updated successfully!</span>
+              </div>
+              <div class="auth-error hidden" id="passwordAlertError" role="alert">
+                <span class="error-text" id="passwordErrorText">Unable to change password.</span>
+              </div>
+
+              <button type="submit" class="btn btn-secondary btn-sm" id="updatePasswordBtn">
+                <span>Update Password</span>
+              </button>
+            </form>
+
+            <div class="section-divider"></div>
+
+            <!-- Danger Zone -->
+            <div class="danger-zone">
+              <h4 class="danger-title text-danger">Danger Zone</h4>
+              <p class="danger-desc">Actions in this zone can impact your account access and data permanence.</p>
+
+              <div class="danger-actions-row">
+                <div class="danger-info">
+                  <strong>Log Out of All Sessions</strong>
+                  <p class="text-muted">Sign out from this device and any active sessions.</p>
+                </div>
+                <button type="button" class="btn btn-outline" id="accountLogoutBtn">
+                  <i data-lucide="log-out"></i>
+                  <span>Log Out</span>
+                </button>
+              </div>
+
+              <div class="danger-actions-row danger-border-top">
+                <div class="danger-info">
+                  <strong>Delete Account</strong>
+                  <p class="text-danger">Permanently delete your account, mock interview evaluations, and history.</p>
+                </div>
+                <button type="button" class="btn btn-danger" id="deleteAccountBtn">
+                  <i data-lucide="trash-2"></i>
+                  <span>Delete Account</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div class="modal-backdrop hidden" id="deleteAccountModal" role="dialog" aria-modal="true" aria-labelledby="delAccTitle">
+      <div class="modal-card">
+        <div class="modal-icon-danger">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <h3 class="modal-title" id="delAccTitle">Permanently Delete Account?</h3>
+        <p class="modal-desc">This action cannot be undone. All your mock interview records, scores, audio records, and resume analysis history will be permanently erased.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelDeleteAccBtn">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteAccBtn">Yes, Delete Everything</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+<script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/settings.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="AVENIR AI User Profile - Manage personal information, preferred job roles, career goals, and interview statistics.">
+  <title>User Profile - AVENIR AI</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body class="dashboard-body">
+
+  <div class="dashboard-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo" aria-label="AVENIR AI Dashboard">
+          <span class="logo-text">AVENIR</span><span class="logo-ai">AI</span>
+        </a>
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Dashboard Navigation">
+        <div class="nav-section-label">MAIN</div>
+        <a href="dashboard.html" class="nav-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Overview</span>
+        </a>
+        <a href="interview-setup.html" class="nav-item">
+          <i data-lucide="messages-square"></i>
+          <span>Start Interview</span>
+        </a>
+        <a href="resume-analyzer.html" class="nav-item">
+          <i data-lucide="file-user"></i>
+          <span>Resume Analyzer</span>
+        </a>
+        <a href="analytics.html" class="nav-item">
+          <i data-lucide="chart-no-axes-combined"></i>
+          <span>Performance</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <i data-lucide="history"></i>
+          <span>Interview History</span>
+        </a>
+        <a href="learning.html" class="nav-item">
+          <i data-lucide="graduation-cap"></i>
+          <span>Learning</span>
+        </a>
+        <a href="group-interview.html" class="nav-item">
+          <i data-lucide="users"></i>
+          <span>Group Interview</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">ACCOUNT</div>
+
+        <a href="profile.html" class="nav-item active">
+          <i data-lucide="user-round"></i>
+          <span>Profile</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item nav-logout" id="logoutBtn">
+          <i data-lucide="log-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="sidebarUserAvatar">U</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebarUserName">Loading...</span>
+          <span class="user-email" id="sidebarUserEmail">user@example.com</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content profile-page-main">
+      <div class="profile-page-wrapper">
+        <!-- Top Bar / Breadcrumb -->
+        <div class="top-bar">
+          <button type="button" class="mobile-toggle" id="sidebarToggle" aria-label="Toggle navigation menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="breadcrumbs">
+            <a href="dashboard.html">Dashboard</a>
+            <i data-lucide="chevron-right" class="crumb-separator"></i>
+            <span class="crumb-current">My Profile</span>
+          </div>
+        </div>
+
+        <!-- Page Header -->
+        <header class="page-header profile-page-header">
+          <div class="header-titles">
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">Manage your personal information, career aspirations, and tailored role
+              configurations.</p>
+          </div>
+        </header>
+
+        <!-- Top Profile Overview Card -->
+        <section class="profile-card" id="profileHeaderCard">
+          <div class="profile-header-left">
+            <div class="profile-avatar-lg" id="profileAvatar" aria-label="Profile initial">
+              <span id="profileAvatarInitial">U</span>
+            </div>
+            <div class="profile-meta-content">
+              <div class="profile-name-row">
+                <h2 class="profile-name" id="profileName">User Name</h2>
+                <span class="profile-role-badge" id="profileTargetBadge">Software Developer</span>
+              </div>
+              <div class="profile-sub-meta">
+                <span class="profile-meta-item" id="profileEmail">
+                  <i data-lucide="mail"></i>
+                  <span id="profileEmailText">user@example.com</span>
+                </span>
+                <span class="profile-meta-dot">&bull;</span>
+                <span class="profile-meta-item">
+                  <i data-lucide="calendar"></i>
+                  <span>Joined <span id="profileJoinDate">November 2024</span></span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-header-right">
+            <button type="button" class="btn btn-outline edit-profile-btn" id="editProfileHeaderBtn">
+              <i data-lucide="edit-3"></i>
+              <span>Edit Profile</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Profile Quick Stats Grid (4 uniform cards) -->
+        <section class="profile-stats-grid" aria-label="Candidate Statistics">
+          <!-- Stat 1: Interviews -->
+          <div class="stat-card-custom">
+            <div class="stat-card-header">
+              <div class="stat-icon-box icon-sunset">
+                <i data-lucide="messages-square"></i>
+              </div>
+              <span class="stat-trend-badge trend-up">
+                <i data-lucide="trending-up"></i>
+                <span>+2 this mo</span>
+              </span>
+            </div>
+            <div class="stat-card-body">
+              <span class="stat-label-single" title="Interviews">Interviews</span>
+              <div class="stat-value-single">
+                <span class="stat-counter" id="profileInterviewsCount" data-target="12">12</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat 2: Average Score -->
+          <div class="stat-card-custom">
+            <div class="stat-card-header">
+              <div class="stat-icon-box icon-violet">
+                <i data-lucide="award"></i>
+              </div>
+              <span class="stat-trend-badge trend-up">
+                <i data-lucide="arrow-up-right"></i>
+                <span>+5% vs last</span>
+              </span>
+            </div>
+            <div class="stat-card-body">
+              <span class="stat-label-single" title="Average Score">Average Score</span>
+              <div class="stat-value-single">
+                <span class="stat-counter" id="profileAvgScore" data-target="88">88</span><span
+                  class="stat-suffix">%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat 3: Best Category -->
+          <div class="stat-card-custom">
+            <div class="stat-card-header">
+              <div class="stat-icon-box icon-emerald">
+                <i data-lucide="target"></i>
+              </div>
+              <span class="stat-trend-badge trend-neutral">
+                <i data-lucide="sparkles"></i>
+                <span>Top Rated</span>
+              </span>
+            </div>
+            <div class="stat-card-body">
+              <span class="stat-label-single" title="Best Category">Best Category</span>
+              <div class="stat-value-single">
+                <span id="profileBestCategory" class="stat-text-truncate" title="Technical">Technical</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat 4: Day Streak -->
+          <div class="stat-card-custom">
+            <div class="stat-card-header">
+              <div class="stat-icon-box icon-flame">
+                <i data-lucide="flame"></i>
+              </div>
+              <span class="stat-trend-badge trend-up">
+                <i data-lucide="zap"></i>
+                <span>Active</span>
+              </span>
+            </div>
+            <div class="stat-card-body">
+              <span class="stat-label-single" title="Day Streak">Day Streak</span>
+              <div class="stat-value-single">
+                <span class="stat-counter" id="profileStreakNum" data-target="5">5</span>
+                <span class="stat-unit-suffix">days</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Profile Form Card -->
+        <section class="profile-form-card" id="profileFormCard">
+          <div class="profile-form-header">
+            <div class="form-title-group">
+              <div class="form-title-icon-box">
+                <i data-lucide="user-check"></i>
+              </div>
+              <div>
+                <h3 class="form-card-title">Career Preferences & Personal Details</h3>
+                <p class="form-card-subtitle">Keep your information up to date so your AI mock sessions are tailored
+                  accurately.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-form-body">
+            <!-- Form status alerts -->
+            <div class="auth-success hidden" id="profileAlertSuccess" role="status">
+              <i data-lucide="check-circle" class="alert-icon success-icon"></i>
+              <span class="success-text" id="profileSuccessText">Profile changes updated successfully!</span>
+            </div>
+            <div class="auth-error hidden" id="profileAlertError" role="alert">
+              <i data-lucide="alert-circle" class="alert-icon"></i>
+              <span class="error-text" id="profileErrorText">An error occurred while updating profile.</span>
+            </div>
+
+            <form id="profileForm" class="profile-form" novalidate>
+              <!-- Row 1: Full Name & Email -->
+              <div class="form-grid-2">
+                <!-- Full Name -->
+                <div class="form-group">
+                  <label for="profileFullName" class="form-label">Full Name</label>
+                  <div class="input-relative-wrapper">
+                    <i data-lucide="user" class="input-icon-inside"></i>
+                    <input type="text" id="profileFullName" name="fullName" class="form-input-styled"
+                      placeholder="Your full name" required minlength="2" autocomplete="name">
+                  </div>
+                </div>
+
+                <!-- Email (Readonly) -->
+                <div class="form-group">
+                  <label for="profileEmailInput" class="form-label">Email Address <span
+                      class="form-label-muted">(Managed via Account)</span></label>
+                  <div class="input-relative-wrapper input-readonly-wrapper">
+                    <i data-lucide="mail" class="input-icon-inside"></i>
+                    <input type="email" id="profileEmailInput" name="email"
+                      class="form-input-styled form-input-readonly" readonly disabled tabindex="-1"
+                      placeholder="user@example.com" autocomplete="email">
+                    <div class="input-lock-badge" title="Email address is managed via account settings">
+                      <i data-lucide="lock" class="lock-icon-inside"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 2: Job Role & Experience Level (Custom Select Dropdowns) -->
+              <div class="form-grid-2">
+                <!-- Preferred Job Role -->
+                <div class="form-group">
+                  <label class="form-label" id="labelRoleSelect">Preferred Job Role</label>
+                  <div class="custom-select-container" id="customRoleSelect" data-name="targetRole">
+                    <input type="hidden" id="profilePreferredRole" name="targetRole" value="Software Developer">
+                    <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false"
+                      aria-labelledby="labelRoleSelect">
+                      <div class="select-trigger-content">
+                        <i data-lucide="briefcase" class="select-trigger-icon"></i>
+                        <span class="select-trigger-text" id="selectedRoleText">Software Developer</span>
+                      </div>
+                      <i data-lucide="chevron-down" class="select-chevron"></i>
+                    </button>
+                    <div class="custom-select-menu" role="listbox" tabindex="-1">
+                      <div class="custom-select-option selected" role="option" data-value="Software Developer"
+                        aria-selected="true">
+                        <span>Software Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Frontend Developer">
+                        <span>Frontend Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Backend Developer">
+                        <span>Backend Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Full Stack Developer">
+                        <span>Full Stack Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Python Developer">
+                        <span>Python Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Java Developer">
+                        <span>Java Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="C Developer">
+                        <span>C Developer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Data Analyst">
+                        <span>Data Analyst</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Data Scientist">
+                        <span>Data Scientist</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="AI/ML Engineer">
+                        <span>AI/ML Engineer</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Database Administrator">
+                        <span>Database Administrator</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="Cybersecurity Analyst">
+                        <span>Cybersecurity Analyst</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Experience Level -->
+                <div class="form-group">
+                  <label class="form-label" id="labelExpSelect">Experience Level</label>
+                  <div class="custom-select-container" id="customExpSelect" data-name="experienceLevel">
+                    <input type="hidden" id="profileExperienceLevel" name="experienceLevel" value="intermediate">
+                    <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false"
+                      aria-labelledby="labelExpSelect">
+                      <div class="select-trigger-content">
+                        <i data-lucide="award" class="select-trigger-icon"></i>
+                        <span class="select-trigger-text" id="selectedExpText">Intermediate (2 - 4 years)</span>
+                      </div>
+                      <i data-lucide="chevron-down" class="select-chevron"></i>
+                    </button>
+                    <div class="custom-select-menu" role="listbox" tabindex="-1">
+                      <div class="custom-select-option" role="option" data-value="fresher">
+                        <span>Fresher (0 - 1 years)</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option selected" role="option" data-value="intermediate"
+                        aria-selected="true">
+                        <span>Intermediate (2 - 4 years)</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                      <div class="custom-select-option" role="option" data-value="experienced">
+                        <span>Experienced (5+ years)</span>
+                        <i data-lucide="check" class="option-check"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 3: Key Skills -->
+              <div class="form-group">
+                <label for="profileSkills" class="form-label">Key Technical Skills <span
+                    class="form-label-muted">(Comma-separated)</span></label>
+                <div class="input-relative-wrapper">
+                  <i data-lucide="code" class="input-icon-inside"></i>
+                  <input type="text" id="profileSkills" name="skills" class="form-input-styled"
+                    placeholder="e.g. JavaScript, React, Node.js, SQL, AWS, Docker">
+                </div>
+              </div>
+
+              <!-- Row 4: Career Interests / Bio -->
+              <div class="form-group">
+                <label for="profileInterests" class="form-label">Career Interests & Target Companies</label>
+                <textarea id="profileInterests" name="bio" class="form-textarea-styled" rows="4"
+                  placeholder="Tell us about the roles, industries, or companies you are targeting so the AI interviewer customizes its questions..."></textarea>
+              </div>
+
+              <!-- Submit button -->
+              <div class="form-actions-profile">
+                <button type="submit" class="btn-save-profile" id="saveProfileBtn">
+                  <i data-lucide="check" class="save-btn-icon"></i>
+                  <span class="btn-text">Save Changes</span>
+                  <span class="btn-spinner hidden" id="profileSpinner">
+                    <i data-lucide="loader-2" class="spinner-icon spinning"></i>
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/profile.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Sidebar mobile drawer
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      const closeBtn = document.getElementById('sidebarCloseBtn');
+      const backdrop = document.getElementById('sidebarBackdrop');
+
+      if (toggle) toggle.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      });
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+      if (backdrop) backdrop.addEventListener('click', () => {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+
+</html>

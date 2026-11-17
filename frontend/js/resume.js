@@ -41,6 +41,12 @@ function initResumeAnalyzer() {
   const uploadStatusText = document.getElementById('uploadStatusText');
   const uploadPercentText = document.getElementById('uploadPercentText');
   const uploadProgressBar = document.getElementById('uploadProgressBar');
+  const resumeNotification = document.getElementById('resumeNotification');
+  const resumeNoticeTitle = document.getElementById('resumeNoticeTitle');
+  const resumeNoticeMsg = document.getElementById('resumeNoticeMsg');
+  const resumeNoticeIcon = document.getElementById('resumeNoticeIcon');
+  const replaceFileNoticeBtn = document.getElementById('replaceFileNoticeBtn');
+  const dismissNoticeBtn = document.getElementById('dismissNoticeBtn');
   const resumeError = document.getElementById('resumeError');
   const resumeErrorText = document.getElementById('resumeErrorText');
   const retryAnalyzeBtn = document.getElementById('retryAnalyzeBtn');
@@ -94,10 +100,15 @@ function initResumeAnalyzer() {
   }
 
   function handleFileSelected(file) {
-    hideError();
+    hideNotification();
     const validation = validateFile(file);
     if (!validation.valid) {
-      showError(validation.message);
+      showNotification({
+        type: 'warning',
+        title: 'File Validation Warning',
+        message: validation.message,
+        action: 'replace'
+      });
       return;
     }
 
@@ -135,21 +146,74 @@ function initResumeAnalyzer() {
     if (fileInput) fileInput.value = '';
     if (dropzoneContent) dropzoneContent.classList.remove('hidden');
     if (filePreview) filePreview.classList.add('hidden');
-    hideError();
+    hideNotification();
+  }
+
+  /**
+   * Professional multi-state notification banner
+   * Supports: success, error, warning, info with tailored actions
+   */
+  function showNotification({ type = 'error', title = 'Notice', message = '', action = 'retry' }) {
+    if (resumeNotification) {
+      // Remove previous color classes
+      resumeNotification.classList.remove('notice-error', 'notice-warning', 'notice-info', 'notice-success', 'hidden');
+      resumeNotification.classList.add(`notice-${type}`);
+
+      if (resumeNoticeTitle) resumeNoticeTitle.textContent = title;
+      if (resumeNoticeMsg) resumeNoticeMsg.textContent = message;
+
+      // Update icon based on notification type
+      if (resumeNoticeIcon) {
+        const iconMap = {
+          success: 'check-circle-2',
+          error: 'alert-circle',
+          warning: 'alert-triangle',
+          info: 'file-search'
+        };
+        resumeNoticeIcon.setAttribute('data-lucide', iconMap[type] || 'alert-circle');
+      }
+
+      // Configure Action Buttons
+      if (replaceFileNoticeBtn) {
+        if (action === 'replace') {
+          replaceFileNoticeBtn.classList.remove('hidden');
+        } else {
+          replaceFileNoticeBtn.classList.add('hidden');
+        }
+      }
+
+      if (retryAnalyzeBtn) {
+        if (action === 'retry') {
+          retryAnalyzeBtn.classList.remove('hidden');
+        } else {
+          retryAnalyzeBtn.classList.add('hidden');
+        }
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+      resumeNotification.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Keep legacy fallback synced
+    if (resumeErrorText) resumeErrorText.textContent = message;
+  }
+
+  function hideNotification() {
+    if (resumeNotification) resumeNotification.classList.add('hidden');
+    if (resumeError) resumeError.classList.add('hidden');
   }
 
   function showError(msg) {
-    if (resumeError) {
-      if (resumeErrorText) resumeErrorText.textContent = msg;
-      resumeError.classList.remove('hidden');
-      resumeError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    } else {
-      alert(msg);
-    }
+    showNotification({
+      type: 'error',
+      title: 'Resume Analysis Notice',
+      message: msg,
+      action: 'retry'
+    });
   }
 
   function hideError() {
-    if (resumeError) resumeError.classList.add('hidden');
+    hideNotification();
   }
 
   // --- Drag and Drop Handlers ---
@@ -200,6 +264,22 @@ function initResumeAnalyzer() {
     });
   }
 
+  // --- Notification Action Listeners ---
+  if (replaceFileNoticeBtn) {
+    replaceFileNoticeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearSelectedFile();
+      if (fileInput) fileInput.click();
+    });
+  }
+
+  if (dismissNoticeBtn) {
+    dismissNoticeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hideNotification();
+    });
+  }
+
   // --- Retry Button Handler ---
   if (retryAnalyzeBtn) {
     retryAnalyzeBtn.addEventListener('click', (e) => {
@@ -219,18 +299,28 @@ function initResumeAnalyzer() {
    * Main Upload and Analysis Workflow
    */
   async function triggerAnalyzeWorkflow() {
-    hideError();
+    hideNotification();
 
     if (isAnalyzing) return; // Prevent duplicate concurrent requests
 
     if (!selectedFile) {
-      showError('Please choose or drag a resume file (PDF or DOCX) before analyzing.');
+      showNotification({
+        type: 'warning',
+        title: 'Document Required',
+        message: 'Please choose or drag a resume file (PDF or DOCX) before analyzing.',
+        action: 'replace'
+      });
       return;
     }
 
     const targetRole = targetRoleSelect ? targetRoleSelect.value : 'Software Developer';
     if (!targetRole) {
-      showError('Please select your target job role.');
+      showNotification({
+        type: 'warning',
+        title: 'Target Role Required',
+        message: 'Please select your target job role.',
+        action: null
+      });
       return;
     }
 
@@ -247,43 +337,114 @@ function initResumeAnalyzer() {
     formData.append('targetRole', targetRole);
 
     let progressTimer = null;
+    let progressTimer2 = null;
+    let scannedTimer = null;
 
     try {
       progressTimer = setTimeout(() => {
         updateProgress(50, 'Extracting text and scanning ATS formatting...');
       }, 700);
 
-      const progressTimer2 = setTimeout(() => {
-        updateProgress(80, 'Evaluating skills, keyword frequency, and experience with Gemini AI...');
-      }, 2000);
+      // If document processing takes longer, indicate scanned page recognition
+      scannedTimer = setTimeout(() => {
+        if (isAnalyzing) {
+          updateProgress(65, 'This resume appears to contain scanned pages. Attempting text recognition...');
+        }
+      }, 3500);
+
+      progressTimer2 = setTimeout(() => {
+        if (isAnalyzing) {
+          updateProgress(85, 'Evaluating skills, keyword frequency, and experience with Gemini AI...');
+        }
+      }, 6000);
 
       const result = await analyzeResume(formData);
       clearTimeout(progressTimer);
       clearTimeout(progressTimer2);
+      clearTimeout(scannedTimer);
 
-      updateProgress(100, 'Analysis completed successfully!');
+      updateProgress(100, 'Your resume has been analyzed successfully.');
       currentAnalysisResult = result;
 
       setTimeout(() => {
         if (uploadProgress) uploadProgress.classList.add('hidden');
         displayAnalysisResults(result);
+
+        // Required Success Notification
+        showNotification({
+          type: 'success',
+          title: 'Analysis Succeeded',
+          message: 'Your resume has been analyzed successfully.',
+          action: null
+        });
+
         if (typeof showToast === 'function') {
-          showToast('Resume ATS Analysis complete!', 'success');
+          showToast('Your resume has been analyzed successfully.', 'success');
         }
       }, 400);
 
     } catch (error) {
       if (progressTimer) clearTimeout(progressTimer);
+      if (progressTimer2) clearTimeout(progressTimer2);
+      if (scannedTimer) clearTimeout(scannedTimer);
+
       console.error('[ResumeAnalyzer] Upload or analysis failed:', error);
       if (uploadProgress) uploadProgress.classList.add('hidden');
 
-      let userMsg = error.message || 'Failed to analyze resume. Please try again.';
-      if (userMsg.includes('413')) userMsg = 'File size exceeds the 5MB limit. Please upload a smaller document.';
-      if (userMsg.includes('415')) userMsg = 'Unsupported file format. Please upload a PDF (.pdf) or Word (.docx) document.';
-      if (userMsg.includes('429')) userMsg = 'AI rate limit reached. Please wait a moment and click Retry.';
-      if (userMsg.includes('503')) userMsg = 'AI service is temporarily experiencing high demand. Please click Retry.';
+      const rawMsg = error.message || '';
+      const msgLower = rawMsg.toLowerCase();
 
-      showError(userMsg);
+      // Precise notification mapping conforming to user specification:
+      if (msgLower.includes('password') || msgLower.includes('encrypt') || msgLower.includes('unlocked')) {
+        showNotification({
+          type: 'warning',
+          title: 'Password Protected Document',
+          message: 'This PDF is password-protected. Upload an unlocked version.',
+          action: 'replace'
+        });
+      } else if (msgLower.includes('empty') || msgLower.includes('no readable resume content')) {
+        showNotification({
+          type: 'warning',
+          title: 'Empty Document',
+          message: 'No readable resume content was found.',
+          action: 'replace'
+        });
+      } else if (msgLower.includes('extracted, but') || msgLower.includes('ai analysis') || msgLower.includes('ai service') || msgLower.includes('ai_failure')) {
+        showNotification({
+          type: 'error',
+          title: 'AI Service Notice',
+          message: 'Resume text was extracted, but AI analysis could not be completed.',
+          action: 'retry'
+        });
+      } else if (msgLower.includes('standard pdf') || msgLower.includes('parse') || msgLower.includes('xref') || msgLower.includes('corrupted') || msgLower.includes('couldn\'t read')) {
+        showNotification({
+          type: 'error',
+          title: 'PDF Format Issue',
+          message: "We couldn't read this PDF. Try exporting it again as a standard PDF.",
+          action: 'replace'
+        });
+      } else if (msgLower.includes('413') || msgLower.includes('5mb')) {
+        showNotification({
+          type: 'warning',
+          title: 'File Size Limit',
+          message: 'File size exceeds the 5MB limit. Please upload a smaller document.',
+          action: 'replace'
+        });
+      } else if (msgLower.includes('415') || msgLower.includes('unsupported')) {
+        showNotification({
+          type: 'warning',
+          title: 'Unsupported File Format',
+          message: 'Unsupported file format. Please upload a PDF (.pdf) or Word (.docx) document.',
+          action: 'replace'
+        });
+      } else {
+        showNotification({
+          type: 'error',
+          title: 'Resume Processing Notice',
+          message: rawMsg || "We couldn't read this PDF. Try exporting it again as a standard PDF.",
+          action: 'retry'
+        });
+      }
     } finally {
       isAnalyzing = false;
       analyzeBtn.disabled = false;

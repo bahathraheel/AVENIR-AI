@@ -212,21 +212,35 @@
             </div>
           </div>
 
-          <!-- Error Alert Container with Retry Button -->
-          <div class="auth-error hidden" id="resumeError" role="alert" style="margin-top: 16px; border-left: 4px solid #EF4444; background: #FFF5F5; padding: 16px 20px; border-radius: 8px;">
-            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-              <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <i data-lucide="alert-circle" class="alert-icon" style="color: #DC2626; flex-shrink: 0; margin-top: 2px;"></i>
-                <div>
-                  <h4 style="margin: 0 0 2px 0; font-size: 14px; font-weight: 700; color: #991B1B;">Resume Analysis Notice</h4>
-                  <span class="error-text" id="resumeErrorText" style="font-size: 13px; color: #7F1D1D; line-height: 1.4;">Please select a valid resume file before proceeding.</span>
-                </div>
+          <!-- Professional Multi-State Notification Banner -->
+          <div class="resume-alert-banner hidden" id="resumeNotification" role="alert">
+            <div class="resume-alert-main">
+              <div class="resume-alert-icon-box" id="resumeNoticeIconBox">
+                <i data-lucide="alert-circle" id="resumeNoticeIcon" class="resume-notice-icon"></i>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" id="retryAnalyzeBtn" style="flex-shrink: 0;">
+              <div class="resume-alert-content">
+                <h4 class="resume-alert-title" id="resumeNoticeTitle">Analysis Notice</h4>
+                <p class="resume-alert-msg" id="resumeNoticeMsg">Please select a valid resume file before proceeding.</p>
+              </div>
+            </div>
+            <div class="resume-alert-actions" id="resumeNoticeActions">
+              <button type="button" class="btn btn-outline btn-sm hidden" id="replaceFileNoticeBtn">
+                <i data-lucide="file-up"></i>
+                <span>Choose Different File</span>
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" id="retryAnalyzeBtn">
                 <i data-lucide="refresh-cw"></i>
                 <span>Retry Analysis</span>
               </button>
+              <button type="button" class="btn-alert-dismiss" id="dismissNoticeBtn" aria-label="Dismiss notification">
+                <i data-lucide="x"></i>
+              </button>
             </div>
+          </div>
+
+          <!-- Legacy Error Alert Container (kept for backward compatibility) -->
+          <div class="auth-error hidden" id="resumeError" role="alert" style="display: none !important;">
+            <span class="error-text" id="resumeErrorText"></span>
           </div>
         </section>
 

@@ -23,11 +23,15 @@ const cleanJsonString = (rawText) => {
  * and seamless fallback across available models.
  */
 const callGeminiWithRetry = async (prompt, maxRetries = 3) => {
-  // Prioritize active working models with available quota
+  // Prioritize active working models with verified availability and fast latency
   const candidateModels = [
+    process.env.GEMINI_MODEL,
+    'gemini-flash-lite-latest',
     'gemini-3.5-flash-lite',
-    'gemini-3.5-flash'
-  ];
+    'gemini-3.1-flash-lite',
+    'gemini-3.7-flash',
+    'gemini-3.8-flash'
+  ].filter((v, i, a) => v && a.indexOf(v) === i);
 
   let lastError = null;
   const requestId = Math.random().toString(36).substring(2, 9).toUpperCase();
@@ -46,9 +50,9 @@ const callGeminiWithRetry = async (prompt, maxRetries = 3) => {
       try {
         console.log(`[Gemini][Req:${requestId}] Attempting model "${currentModel}" (Attempt ${modelAttempt}/${maxModelAttempts})...`);
 
-        // Timeout guard: 20 seconds per attempt
+        // Timeout guard: 12 seconds per attempt
         const controller = new AbortController();
-        const timeoutHandle = setTimeout(() => controller.abort(), 20000);
+        const timeoutHandle = setTimeout(() => controller.abort(), 12000);
 
         const response = await ai.models.generateContent({
           model: currentModel,
@@ -147,17 +151,23 @@ const callGeminiWithRetry = async (prompt, maxRetries = 3) => {
           throw new Error(`Gemini authentication error (${status}): ${sanitizedMsg}`);
         }
 
-        // 404 (Model removed) or 429 (Daily quota exhausted on this model):
-        // Break out to immediately try next model
-        if (status === 404 || status === 429 || sanitizedMsg.includes('no longer available') || sanitizedMsg.includes('quota')) {
-          console.log(`[Gemini][Req:${requestId}] Model "${currentModel}" quota/availability exhausted (${status}). Switching to next fallback model...`);
+        // 404, 429, 503 (high demand) or Aborted timeout:
+        // Break out immediately to try next model in the fallback chain without wasting time
+        if (status === 404 || status === 429 || status === 503 ||
+            sanitizedMsg.includes('no longer available') ||
+            sanitizedMsg.includes('quota') ||
+            sanitizedMsg.includes('high demand') ||
+            sanitizedMsg.includes('UNAVAILABLE') ||
+            sanitizedMsg.includes('aborted') ||
+            sanitizedMsg.includes('timeout')) {
+          console.log(`[Gemini][Req:${requestId}] Model "${currentModel}" unavailable or congested (${status}). Immediately switching to next fallback model...`);
           break;
         }
 
-        // For 503 (temporary high demand) or timeouts, back off and retry
+        // For other transient errors, fast retry
         if (modelAttempt < maxModelAttempts) {
-          const delay = 1200 + Math.floor(Math.random() * 500);
-          console.log(`[Gemini][Req:${requestId}] Transient condition on "${currentModel}". Retrying in ${delay}ms...`);
+          const delay = 500 + Math.floor(Math.random() * 300);
+          console.log(`[Gemini][Req:${requestId}] Transient error on "${currentModel}". Retrying in ${delay}ms...`);
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
@@ -166,6 +176,306 @@ const callGeminiWithRetry = async (prompt, maxRetries = 3) => {
 
   // If every candidate model in the chain exhausted
   throw new Error(`AI service is temporarily busy. All candidate models failed. Details: ${lastError?.message || 'High demand on Gemini services'}`);
+};
+
+/**
+ * Dynamic fallback generator that provides verified, role-specific questions
+ * if every live AI model in the fallback chain is unreachable or rate-limited.
+ */
+const generateCuratedFallbackQuestions = ({
+  jobRole = 'Software Developer',
+  category = 'technical',
+  difficulty = 'medium',
+  experienceLevel = 'intermediate',
+  questionCount = 5,
+  defaultLang = 'c'
+}) => {
+  const count = Math.min(20, Math.max(1, parseInt(questionCount, 10) || 5));
+  const questions = [];
+
+  if (category === 'coding') {
+    const codingBank = [
+      {
+        title: `Reverse Array / Sequence In-Place: ${jobRole}`,
+        description: `Given a sequential sequence of elements, reverse the sequence in-place with O(1) auxiliary space complexity.`,
+        inputFormat: 'First line contains integer N. Second line contains N space-separated integers.',
+        outputFormat: 'Print the reversed sequence separated by spaces.',
+        examples: [{ input: '5\\n1 2 3 4 5', output: '5 4 3 2 1', explanation: 'Elements are reversed in place.' }],
+        constraints: ['1 <= N <= 10^5', 'Time: O(N)', 'Space: O(1)'],
+        testCases: [
+          { input: '5\\n1 2 3 4 5', expectedOutput: '5 4 3 2 1', isPublic: true, description: 'Standard array sequence' },
+          { input: '1\\n42', expectedOutput: '42', isPublic: false, description: 'Single element boundary' }
+        ]
+      },
+      {
+        title: `Two Sum - Target Sum Matching: ${jobRole}`,
+        description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. Each input will have exactly one solution.`,
+        inputFormat: 'First line: target. Second line: N integers.',
+        outputFormat: 'Print the two 0-based indices separated by a space.',
+        examples: [{ input: '9\\n2 7 11 15', output: '0 1', explanation: 'nums[0] + nums[1] = 2 + 7 = 9' }],
+        constraints: ['2 <= nums.length <= 10^4', 'Time: O(N)', 'Space: O(N)'],
+        testCases: [
+          { input: '9\\n2 7 11 15', expectedOutput: '0 1', isPublic: true, description: 'Standard target sum' },
+          { input: '6\\n3 2 4', expectedOutput: '1 2', isPublic: false, description: 'Alternative index order' }
+        ]
+      },
+      {
+        title: `Valid Parentheses & Bracket Matching: ${jobRole}`,
+        description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. Open brackets must be closed by the same type of brackets in the correct order.`,
+        inputFormat: 'Single string line containing brackets.',
+        outputFormat: 'Print "true" if valid, "false" otherwise.',
+        examples: [{ input: '()[]{}', output: 'true', explanation: 'All brackets are matched properly.' }],
+        constraints: ['1 <= s.length <= 10^4', 'Time: O(N)', 'Space: O(N)'],
+        testCases: [
+          { input: '()[]{}', expectedOutput: 'true', isPublic: true, description: 'Balanced brackets' },
+          { input: '(]', expectedOutput: 'false', isPublic: false, description: 'Mismatched brackets' }
+        ]
+      },
+      {
+        title: `Longest Substring Without Repeating Characters: ${jobRole}`,
+        description: `Given a string s, find the length of the longest substring without repeating characters using an optimal sliding window.`,
+        inputFormat: 'Single string line.',
+        outputFormat: 'Print the integer maximum length.',
+        examples: [{ input: 'abcabcbb', output: '3', explanation: 'The answer is "abc", with the length of 3.' }],
+        constraints: ['0 <= s.length <= 5 * 10^4', 'Time: O(N)', 'Space: O(min(N, M))'],
+        testCases: [
+          { input: 'abcabcbb', expectedOutput: '3', isPublic: true, description: 'Substrings with repeats' },
+          { input: 'bbbbb', expectedOutput: '1', isPublic: false, description: 'All identical chars' }
+        ]
+      },
+      {
+        title: `Merge Two Sorted Intervals / Lists: ${jobRole}`,
+        description: `You are given two sorted arrays. Merge them into a single sorted sequence in non-decreasing order with linear time complexity.`,
+        inputFormat: 'Line 1: N integers. Line 2: M integers.',
+        outputFormat: 'Print N+M sorted integers separated by spaces.',
+        examples: [{ input: '1 3 5\\n2 4 6', output: '1 2 3 4 5 6', explanation: 'Merged sorted sequence.' }],
+        constraints: ['1 <= N, M <= 10^5', 'Time: O(N + M)', 'Space: O(1) auxiliary'],
+        testCases: [
+          { input: '1 3 5\\n2 4 6', expectedOutput: '1 2 3 4 5 6', isPublic: true, description: 'Interleaved sorted arrays' },
+          { input: '1\\n2', expectedOutput: '1 2', isPublic: false, description: 'Minimal single items' }
+        ]
+      }
+    ];
+
+    for (let i = 0; i < count; i++) {
+      const template = codingBank[i % codingBank.length];
+      questions.push({
+        id: i + 1,
+        questionId: i + 1,
+        category: 'coding',
+        title: template.title,
+        question: template.title,
+        questionText: template.description,
+        description: template.description,
+        inputFormat: template.inputFormat,
+        outputFormat: template.outputFormat,
+        examples: template.examples,
+        constraints: template.constraints,
+        languageSupport: ['c', 'cpp', 'python', 'java', 'javascript'],
+        defaultLanguage: defaultLang,
+        starterCode: {
+          c: `#include <stdio.h>\\n#include <stdlib.h>\\n\\nint main(void) {\\n    // Solution for ${jobRole}\\n    return 0;\\n}\\n`,
+          cpp: `#include <iostream>\\n#include <vector>\\nusing namespace std;\\n\\nint main() {\\n    return 0;\\n}\\n`,
+          python: `import sys\\n\\ndef solve():\\n    pass\\n\\nif __name__ == '__main__':\\n    solve()\\n`,
+          java: `import java.util.*;\\n\\npublic class Main {\\n    public static void main(String[] args) {}\\n}\\n`,
+          javascript: `const fs = require('fs');\\nfunction solve() {}\\nsolve();\\n`
+        },
+        testCases: template.testCases,
+        difficulty,
+        isFallback: true
+      });
+    }
+    return questions;
+  }
+
+  if (category === 'hr') {
+    const hrBank = [
+      {
+        q: `Could you walk me through your professional background and what specifically drew you to apply for the ${jobRole} position at this stage in your career?`,
+        comp: 'Career Motivation & Background',
+        context: 'Evaluates authentic interest in the role, self-awareness, and clear communication.'
+      },
+      {
+        q: `Describe a situation where you had a disagreement with a team member or project lead regarding a project deadline or requirement. How did you resolve it?`,
+        comp: 'Conflict Resolution & Teamwork',
+        context: 'Assesses emotional intelligence, active listening, and collaboration under pressure.'
+      },
+      {
+        q: `Tell me about a time when you received constructive or critical feedback on your work. How did you respond, and what adjustments did you make?`,
+        comp: 'Growth Mindset & Adaptability',
+        context: 'Examines openness to learning, humility, and willingness to improve.'
+      },
+      {
+        q: `How do you organize your workflow and prioritize tasks when faced with competing deadlines and unexpected high-priority bugs or blockers?`,
+        comp: 'Time Management & Prioritization',
+        context: 'Assesses executive function, stakeholder communication, and delivery focus.'
+      },
+      {
+        q: `Where do you see yourself technically and professionally in the next 2-3 years, and how does this ${jobRole} role help you achieve those goals?`,
+        comp: 'Long-term Vision & Culture Alignment',
+        context: 'Assesses retention potential, career aspiration alignment, and ambition.'
+      }
+    ];
+
+    for (let i = 0; i < count; i++) {
+      const template = hrBank[i % hrBank.length];
+      questions.push({
+        id: i + 1,
+        questionId: i + 1,
+        category: 'hr',
+        question: template.q,
+        questionText: template.q,
+        competency: template.comp,
+        scenarioContext: template.context,
+        evaluationCriteria: ['relevance', 'communication', 'completeness', 'professionalism'],
+        difficulty,
+        isFallback: true
+      });
+    }
+    return questions;
+  }
+
+  if (category === 'behavioral') {
+    const behBank = [
+      {
+        q: `Describe a high-stakes technical or operational crisis you encountered in a previous project. What was the Situation, what Task were you assigned, what concrete Actions did you take, and what was the quantifiable Result?`,
+        comp: 'Crisis Management & Ownership'
+      },
+      {
+        q: `Tell me about a time when you had to deliver a critical deliverable for ${jobRole} with incomplete specifications or ambiguous requirements. How did you navigate the ambiguity to deliver results?`,
+        comp: 'Navigating Ambiguity & Leadership'
+      },
+      {
+        q: `Give me an example of a project where an initial approach failed or hit a severe bottleneck. How did you diagnose the problem, pivot your technical strategy, and what did you learn?`,
+        comp: 'Resilience & Root Cause Analysis'
+      },
+      {
+        q: `Describe an occasion where you had to persuade stakeholders or engineering peers to adopt a new technical standard, architectural pattern, or tool. How did you build consensus?`,
+        comp: 'Influence & Cross-functional Alignment'
+      },
+      {
+        q: `Tell me about a time when you balanced trade-offs between shipping a feature quickly versus technical debt and code quality in your capacity as ${jobRole}.`,
+        comp: 'Pragmatic Engineering & Quality Standards'
+      }
+    ];
+
+    for (let i = 0; i < count; i++) {
+      const template = behBank[i % behBank.length];
+      questions.push({
+        id: i + 1,
+        questionId: i + 1,
+        category: 'behavioral',
+        question: template.q,
+        questionText: template.q,
+        competency: template.comp,
+        scenarioContext: 'Evaluated strictly using the Situation, Task, Action, and Result (STAR) framework.',
+        starGuide: {
+          situation: 'Set the context, project scope, and specific challenge.',
+          task: 'Explain your direct responsibility.',
+          action: 'Detail the exact steps and technologies implemented.',
+          result: 'State the measurable outcome, business impact, and key takeaway.'
+        },
+        evaluationCriteria: ['starStructure', 'relevance', 'reflection', 'communication'],
+        difficulty,
+        isFallback: true
+      });
+    }
+    return questions;
+  }
+
+  if (category === 'domain-specific') {
+    const domainBank = [
+      {
+        q: `What are the production-grade architectural patterns, fault-tolerance mechanisms, and operational best practices you rely upon when building systems for ${jobRole}?`,
+        topic: 'Domain Architecture & Reliability',
+        expected: ['High Availability', 'Fault Isolation', 'Monitoring & Metrics', 'Resilience Patterns']
+      },
+      {
+        q: `How do you address regulatory compliance, data protection, and enterprise security standards within the ${jobRole} lifecycle?`,
+        topic: 'Security & Compliance Standards',
+        expected: ['Encryption at Rest/Transit', 'Least Privilege Access', 'Audit Logging', 'OWASP Best Practices']
+      },
+      {
+        q: `Describe the continuous integration, continuous delivery (CI/CD), and automated testing pipeline you consider standard for modern ${jobRole} deployments.`,
+        topic: 'DevOps & Pipeline Automation',
+        expected: ['Automated Testing Gates', 'Canary/Blue-Green Deployments', 'Rollback Strategies', 'Containerization']
+      },
+      {
+        q: `Explain how you monitor, profile, and troubleshoot real-time bottlenecks (CPU, memory leaks, I/O latency) in a production environment for ${jobRole}.`,
+        topic: 'Observability & Performance Profiling',
+        expected: ['APM Tools', 'Distributed Tracing', 'Profiling Flamegraphs', 'Log Aggregation']
+      },
+      {
+        q: `What emerging tools, design paradigms, or frameworks are currently shaping the ${jobRole} discipline, and how have you evaluated them for adoption?`,
+        topic: 'Industry Evolution & Technology Evaluation',
+        expected: ['Technology Trade-offs', 'Proof of Concept Benchmarks', 'Developer Productivity', 'Ecosystem Maturity']
+      }
+    ];
+
+    for (let i = 0; i < count; i++) {
+      const template = domainBank[i % domainBank.length];
+      questions.push({
+        id: i + 1,
+        questionId: i + 1,
+        category: 'domain-specific',
+        question: template.q,
+        questionText: template.q,
+        domainTopic: template.topic,
+        industryStandard: 'Production Standards & System Benchmarks',
+        expectedConcepts: template.expected,
+        evaluationCriteria: ['domainExpertise', 'practicalImplementation', 'industryStandards', 'completeness'],
+        difficulty,
+        isFallback: true
+      });
+    }
+    return questions;
+  }
+
+  // Technical Category (Default)
+  const techBank = [
+    {
+      q: `Explain how memory management, lifecycle allocation, and garbage collection (or manual resource deallocation) operate in the primary technologies you use for ${jobRole}. What causes leaks and how do you prevent them?`,
+      topic: 'Memory Management & Resource Lifecycle',
+      expected: ['Heap vs Stack allocation', 'Garbage collection cycles', 'Resource leaks', 'Profiling tools']
+    },
+    {
+      q: `Compare and contrast asynchronous programming paradigms (event loops, promises/async-await, multi-threading, worker processes) relevant to ${jobRole}. How do you avoid blocking operations?`,
+      topic: 'Concurrency & Asynchronous Architecture',
+      expected: ['Event Loop mechanics', 'Thread pooling', 'Non-blocking I/O', 'Race conditions & locks']
+    },
+    {
+      q: `How do you design an API or service interface for ${jobRole} to ensure idempotency, rate limiting, backward compatibility, and graceful degradation during partial outages?`,
+      topic: 'API Design & Resilient Distributed Systems',
+      expected: ['Idempotency keys', 'HTTP status semantics', 'Versioning strategies', 'Circuit breakers']
+    },
+    {
+      q: `Discuss database indexing strategies, query execution plans, and caching patterns (e.g. Cache-Aside, Write-Through). When does an index degrade performance instead of improving it?`,
+      topic: 'Data Persistence, Indexing & Caching',
+      expected: ['B-Tree indexing', 'Cache invalidation', 'Read vs Write trade-offs', 'Execution plans']
+    },
+    {
+      q: `Walk me through your approach to securing an application in ${jobRole}: addressing authentication, token management, authorization controls, and mitigation against injection or CSRF attacks.`,
+      topic: 'Application Security & Defensive Architecture',
+      expected: ['JWT vs Sessions', 'RBAC/ABAC', 'Input sanitization & parameterized queries', 'CORS & CSP headers']
+    }
+  ];
+
+  for (let i = 0; i < count; i++) {
+    const template = techBank[i % techBank.length];
+    questions.push({
+      id: i + 1,
+      questionId: i + 1,
+      category: 'technical',
+      question: template.q,
+      questionText: template.q,
+      topic: template.topic,
+      expectedConcepts: template.expected,
+      evaluationCriteria: ['technicalAccuracy', 'reasoning', 'completeness', 'clarity'],
+      difficulty,
+      isFallback: true
+    });
+  }
+  return questions;
 };
 
 /**
@@ -185,27 +495,27 @@ const generateInterviewQuestions = async ({
   experienceLevel = 'mid',
   questionCount = 5,
 }) => {
+  const category = normaliseInterviewType(interviewType);
+  const categoryMeta = getInterviewCategoryMetadata(category);
+  const count = Math.min(20, Math.max(1, parseInt(questionCount, 10) || 5));
+
+  // Determine default language for coding questions
+  let defaultLang = 'c';
+  const roleLower = (jobRole || '').toLowerCase();
+  if (roleLower.includes('python') || roleLower.includes('data') || roleLower.includes('ai') || roleLower.includes('ml')) {
+    defaultLang = 'python';
+  } else if (roleLower.includes('java') && !roleLower.includes('javascript')) {
+    defaultLang = 'java';
+  } else if (roleLower.includes('c++') || roleLower.includes('cpp')) {
+    defaultLang = 'cpp';
+  } else if (roleLower.includes('react') || roleLower.includes('frontend') || roleLower.includes('node') || roleLower.includes('web')) {
+    defaultLang = 'javascript';
+  } else {
+    // Default to C for general systems/engineering unless user picks other
+    defaultLang = 'c';
+  }
+
   try {
-    const category = normaliseInterviewType(interviewType);
-    const categoryMeta = getInterviewCategoryMetadata(category);
-    const count = Math.min(20, Math.max(1, parseInt(questionCount, 10) || 5));
-
-    // Determine default language for coding questions
-    let defaultLang = 'c';
-    const roleLower = (jobRole || '').toLowerCase();
-    if (roleLower.includes('python') || roleLower.includes('data') || roleLower.includes('ai') || roleLower.includes('ml')) {
-      defaultLang = 'python';
-    } else if (roleLower.includes('java') && !roleLower.includes('javascript')) {
-      defaultLang = 'java';
-    } else if (roleLower.includes('c++') || roleLower.includes('cpp')) {
-      defaultLang = 'cpp';
-    } else if (roleLower.includes('react') || roleLower.includes('frontend') || roleLower.includes('node') || roleLower.includes('web')) {
-      defaultLang = 'javascript';
-    } else {
-      // Default to C for general systems/engineering unless user picks other
-      defaultLang = 'c';
-    }
-
     let prompt = '';
 
     if (category === 'coding') {
@@ -502,8 +812,31 @@ Return ONLY a valid JSON array of exactly ${count} objects matching this EXACT s
 
     return formatted;
   } catch (error) {
-    console.error('[Gemini Service] generateInterviewQuestions Error:', error.message);
-    throw error;
+    console.warn(`[Gemini Service] Live question generation unavailable (${error.message}). Activating curated fallback question bank for "${jobRole}" (${category})...`);
+    const fallbackQuestions = generateCuratedFallbackQuestions({
+      jobRole,
+      category,
+      difficulty,
+      experienceLevel,
+      questionCount: count,
+      defaultLang
+    });
+
+    try {
+      Object.defineProperty(fallbackQuestions, '_timing', {
+        value: {
+          geminiGeneration: 0,
+          jsonValidation: 1,
+          winningModel: 'curated-fallback',
+          attempts: [{ model: 'curated-fallback', attempt: 1, durationMs: 1, status: 'fallback_activated' }]
+        },
+        enumerable: false,
+        writable: true,
+        configurable: true,
+      });
+    } catch (_) {}
+
+    return fallbackQuestions;
   }
 };
 

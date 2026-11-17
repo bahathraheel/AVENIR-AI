@@ -3,7 +3,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const apiKey = process.env.GEMINI_API_KEY;
-const defaultModel = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+const defaultModel = process.env.GEMINI_MODEL || 'gemini-flash-lite-latest';
 
 if (!apiKey) {
   console.warn(

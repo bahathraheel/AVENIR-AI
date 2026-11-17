@@ -4770,3 +4770,342 @@ input:checked+.toggle-slider::before {
   background-color: #1C2128;
   border-color: #FF5841;
 }
+
+/* ==========================================================================
+   AVENIR AI - PREMIUM RESUME ANALYZER NOTIFICATIONS & DARK MODE
+   ========================================================================== */
+
+.resume-alert-banner {
+  margin-top: 20px;
+  border-radius: var(--radius-lg, 12px);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.resume-alert-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.resume-alert-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.resume-notice-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.resume-alert-content {
+  flex: 1;
+}
+
+.resume-alert-title {
+  margin: 0 0 3px 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.resume-alert-msg {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.resume-alert-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-alert-dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.btn-alert-dismiss:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Multi-State Color Themes (Light Mode) */
+.resume-alert-banner.notice-error {
+  background-color: #FFF5F5;
+  border: 1.5px solid rgba(239, 68, 68, 0.3);
+  border-left: 4.5px solid #EF4444;
+}
+.resume-alert-banner.notice-error .resume-alert-icon-box {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+.resume-alert-banner.notice-error .resume-alert-title {
+  color: #991B1B;
+}
+.resume-alert-banner.notice-error .resume-alert-msg {
+  color: #7F1D1D;
+}
+
+.resume-alert-banner.notice-warning {
+  background-color: #FFFBEB;
+  border: 1.5px solid rgba(245, 158, 11, 0.3);
+  border-left: 4.5px solid #F59E0B;
+}
+.resume-alert-banner.notice-warning .resume-alert-icon-box {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+}
+.resume-alert-banner.notice-warning .resume-alert-title {
+  color: #92400E;
+}
+.resume-alert-banner.notice-warning .resume-alert-msg {
+  color: #78350F;
+}
+
+.resume-alert-banner.notice-info {
+  background-color: #EFF6FF;
+  border: 1.5px solid rgba(59, 130, 246, 0.3);
+  border-left: 4.5px solid #3B82F6;
+}
+.resume-alert-banner.notice-info .resume-alert-icon-box {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #2563EB;
+}
+.resume-alert-banner.notice-info .resume-alert-title {
+  color: #1E40AF;
+}
+.resume-alert-banner.notice-info .resume-alert-msg {
+  color: #1E3A8A;
+}
+
+.resume-alert-banner.notice-success {
+  background-color: #ECFDF5;
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  border-left: 4.5px solid #10B981;
+}
+.resume-alert-banner.notice-success .resume-alert-icon-box {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+.resume-alert-banner.notice-success .resume-alert-title {
+  color: #065F46;
+}
+.resume-alert-banner.notice-success .resume-alert-msg {
+  color: #047857;
+}
+
+/* Premium Analyze Button Gradient */
+#analyzeResumeBtn {
+  background: linear-gradient(135deg, #FF5841 0%, #C53678 100%) !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  box-shadow: 0 4px 14px rgba(255, 88, 65, 0.28) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#analyzeResumeBtn:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(255, 88, 65, 0.4) !important;
+}
+
+#analyzeResumeBtn:disabled {
+  opacity: 0.65 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   RESUME ANALYZER DARK MODE THEME (#0D1117, #161B22, #1C2128)
+   ========================================================================== */
+
+[data-theme="dark"] .resume-upload-card,
+[data-theme="dark"] .result-score-card,
+[data-theme="dark"] .resume-detail-panel,
+[data-theme="dark"] .score-breakdown-card {
+  background-color: #1C2128 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .dropzone {
+  background-color: #161B22 !important;
+  border-color: #30363D !important;
+}
+
+[data-theme="dark"] .dropzone:hover,
+[data-theme="dark"] .dropzone.drag-active,
+[data-theme="dark"] .dropzone.dragover {
+  border-color: #FF5841 !important;
+  background-color: rgba(255, 88, 65, 0.08) !important;
+}
+
+[data-theme="dark"] .dropzone-heading,
+[data-theme="dark"] .upload-card-header .card-title,
+[data-theme="dark"] .file-name,
+[data-theme="dark"] #candidateName {
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .dropzone-sub,
+[data-theme="dark"] .upload-card-header .card-subtitle,
+[data-theme="dark"] .file-size,
+[data-theme="dark"] #candidateFileName,
+[data-theme="dark"] .score-status-text {
+  color: #A0AAB8 !important;
+}
+
+[data-theme="dark"] .file-preview {
+  background-color: #161B22 !important;
+  border-color: rgba(255, 88, 65, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .btn-browse-action {
+  background-color: #161B22 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .btn-browse-action:hover {
+  border-color: #FF5841 !important;
+  color: #FF5841 !important;
+  background-color: rgba(255, 88, 65, 0.12) !important;
+}
+
+[data-theme="dark"] .upload-progress {
+  background-color: #161B22 !important;
+  border: 1px solid #30363D !important;
+}
+
+[data-theme="dark"] .progress-status,
+[data-theme="dark"] .progress-percentage {
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .progress-track {
+  background-color: #21262D !important;
+}
+
+[data-theme="dark"] .role-select-group .form-select {
+  background-color: #161B22 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .role-select-group .form-select option {
+  background-color: #161B22;
+  color: #F0F3F6;
+}
+
+/* Dark Mode Multi-State Alert Banner */
+[data-theme="dark"] .resume-alert-banner.notice-error {
+  background-color: rgba(239, 68, 68, 0.14) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  border-left-color: #EF4444 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-error .resume-alert-icon-box {
+  background-color: rgba(239, 68, 68, 0.25) !important;
+  color: #FCA5A5 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-error .resume-alert-title {
+  color: #FCA5A5 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-error .resume-alert-msg {
+  color: #F87171 !important;
+}
+
+[data-theme="dark"] .resume-alert-banner.notice-warning {
+  background-color: rgba(245, 158, 11, 0.14) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  border-left-color: #F59E0B !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-warning .resume-alert-icon-box {
+  background-color: rgba(245, 158, 11, 0.25) !important;
+  color: #FDE68A !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-warning .resume-alert-title {
+  color: #FDE68A !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-warning .resume-alert-msg {
+  color: #FBBF24 !important;
+}
+
+[data-theme="dark"] .resume-alert-banner.notice-info {
+  background-color: rgba(59, 130, 246, 0.14) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  border-left-color: #3B82F6 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-info .resume-alert-icon-box {
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  color: #93C5FD !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-info .resume-alert-title {
+  color: #93C5FD !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-info .resume-alert-msg {
+  color: #60A5FA !important;
+}
+
+[data-theme="dark"] .resume-alert-banner.notice-success {
+  background-color: rgba(16, 185, 129, 0.14) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  border-left-color: #10B981 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-success .resume-alert-icon-box {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  color: #A7F3D0 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-success .resume-alert-title {
+  color: #A7F3D0 !important;
+}
+[data-theme="dark"] .resume-alert-banner.notice-success .resume-alert-msg {
+  color: #34D399 !important;
+}
+
+[data-theme="dark"] .btn-alert-dismiss:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] #professionalSummary,
+[data-theme="dark"] #experienceAnalysisText,
+[data-theme="dark"] #projectAnalysisText,
+[data-theme="dark"] #educationAnalysisText,
+[data-theme="dark"] #scoringExplanationText {
+  color: #E6EDF3 !important;
+}
+
+[data-theme="dark"] .resume-detail-panel > div[style*="background: #FAF9FB"] {
+  background: #161B22 !important;
+  border-color: #30363D !important;
+}
+

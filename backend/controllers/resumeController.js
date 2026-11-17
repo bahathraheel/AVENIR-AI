@@ -46,20 +46,49 @@ const analyzeResume = async (req, res, next) => {
 
     // 4. Extract text from Buffer
     let extractedText = '';
+    let extractionMeta = { method: 'default', isScanned: false };
+
     try {
-      extractedText = await resumeService.extractText(file.buffer, file.mimetype, file.originalname);
+      const extractionResult = await resumeService.extractText(file.buffer, file.mimetype, file.originalname);
+      if (typeof extractionResult === 'string') {
+        extractedText = extractionResult;
+      } else if (extractionResult && extractionResult.text) {
+        extractedText = extractionResult.text;
+        extractionMeta.method = extractionResult.method || 'default';
+        extractionMeta.isScanned = !!extractionResult.isScanned;
+      }
     } catch (extractError) {
       console.error('[ResumeController] Text extraction error:', extractError.message);
+      
+      if (extractError.code === 'PASSWORD_PROTECTED' || /password/i.test(extractError.message)) {
+        return res.status(400).json({
+          success: false,
+          code: 'PASSWORD_PROTECTED',
+          error: 'This PDF is password-protected. Upload an unlocked version.',
+        });
+      }
+      
+      if (extractError.code === 'EMPTY_PDF' || /no readable/i.test(extractError.message)) {
+        return res.status(400).json({
+          success: false,
+          code: 'EMPTY_PDF',
+          error: 'No readable resume content was found.',
+        });
+      }
+
       return res.status(400).json({
         success: false,
-        error: `Could not parse text from this file: ${extractError.message}. Please ensure the file is not password-protected or corrupted.`,
+        code: 'PARSE_FAILED',
+        error: "We couldn't read this PDF. Try exporting it again as a standard PDF.",
+        details: extractError.message
       });
     }
 
-    if (!extractedText || extractedText.trim().length < 50) {
+    if (!extractedText || extractedText.trim().length < 30) {
       return res.status(400).json({
         success: false,
-        error: 'Could not extract sufficient text from the resume. Please ensure the document contains selectable text and is not an image-only scan.',
+        code: 'EMPTY_PDF',
+        error: 'No readable resume content was found.',
       });
     }
 
@@ -73,21 +102,11 @@ const analyzeResume = async (req, res, next) => {
     } catch (aiError) {
       console.error('[ResumeController] Gemini analysis error:', aiError.message);
       const msg = aiError.message || '';
-      if (msg.includes('429') || msg.includes('quota') || msg.includes('exhausted')) {
-        return res.status(429).json({
-          success: false,
-          error: 'AI analysis quota temporarily reached. Please wait a moment and try again.',
-        });
-      }
-      if (msg.includes('503') || msg.includes('unavailable') || msg.includes('high demand')) {
-        return res.status(503).json({
-          success: false,
-          error: 'AI analysis service is temporarily experiencing high demand. Please try again shortly.',
-        });
-      }
-      return res.status(500).json({
+      return res.status(503).json({
         success: false,
-        error: `Failed to complete resume analysis: ${aiError.message || 'AI processing error'}.`,
+        code: 'AI_FAILURE',
+        error: 'Resume text was extracted, but AI analysis could not be completed.',
+        details: msg
       });
     }
 
@@ -99,6 +118,8 @@ const analyzeResume = async (req, res, next) => {
       fileSize: file.size,
       mimeType: file.mimetype,
       targetJobRole,
+      extractionMethod: extractionMeta.method,
+      isScanned: extractionMeta.isScanned,
       analysis,
       createdAt: new Date().toISOString(),
     };
@@ -108,10 +129,13 @@ const analyzeResume = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
+      message: 'Your resume has been analyzed successfully.',
+      isScanned: extractionMeta.isScanned,
       data: {
         resumeId,
         fileName: file.originalname,
         targetJobRole,
+        isScanned: extractionMeta.isScanned,
         analysis,
         createdAt: resumeDoc.createdAt,
       },

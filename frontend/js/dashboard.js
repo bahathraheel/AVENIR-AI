@@ -260,10 +260,19 @@ function renderRecentInterviews(interviews) {
   }
 }
 
+let cachedRecentInterviews = [];
+
+window.addEventListener('avenir-theme-changed', () => {
+  if (cachedRecentInterviews && cachedRecentInterviews.length > 0) {
+    renderPerformanceChart(cachedRecentInterviews);
+  }
+});
+
 /**
  * Render canvas-based performance progression chart
  */
 function renderPerformanceChart(recentInterviews) {
+  cachedRecentInterviews = recentInterviews || [];
   const canvas = document.getElementById('performanceChart');
   const fallback = document.getElementById('chartFallback');
 
@@ -286,6 +295,7 @@ function renderPerformanceChart(recentInterviews) {
 
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
   // High-DPI crisp rendering
   const rect = canvas.getBoundingClientRect();
@@ -308,10 +318,10 @@ function renderPerformanceChart(recentInterviews) {
 
   // Draw grid lines
   const gridSteps = 4;
-  ctx.strokeStyle = '#F3F4F6';
+  ctx.strokeStyle = isDark ? '#30363D' : '#F3F4F6';
   ctx.lineWidth = 1;
   ctx.font = '11px sans-serif';
-  ctx.fillStyle = '#9CA3AF';
+  ctx.fillStyle = isDark ? '#A0AAB8' : '#9CA3AF';
   ctx.textAlign = 'right';
 
   for (let i = 0; i <= gridSteps; i++) {
@@ -356,7 +366,7 @@ function renderPerformanceChart(recentInterviews) {
     ctx.fill();
 
     // Score label on top of bar
-    ctx.fillStyle = '#252525';
+    ctx.fillStyle = isDark ? '#F0F3F6' : '#252525';
     ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(`${score}%`, x + barWidth / 2, y - 6);
@@ -372,7 +382,7 @@ function renderPerformanceChart(recentInterviews) {
       }
     }
 
-    ctx.fillStyle = '#6B7280';
+    ctx.fillStyle = isDark ? '#768390' : '#6B7280';
     ctx.font = '10px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(label, x + barWidth / 2, height - 10);

@@ -44,7 +44,10 @@ const server = http.createServer((req, res) => {
     }
 
     const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    let contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    if (contentType.startsWith('text/') || contentType === 'application/javascript' || contentType === 'application/json') {
+      contentType += '; charset=utf-8';
+    }
 
     res.writeHead(200, {
       'Content-Type': contentType,

@@ -39,7 +39,12 @@
   /* Surfaces & Backgrounds */
   --background: var(--color-background);
   --surface: var(--color-surface);
-  --surface-secondary: #FAF7F9;
+  --surface-secondary: #FFF8F7;
+  --surface-2: #FFF8F7;
+  --card-bg: #FFFFFF;
+  --card-bg-hover: #FFF8F7;
+  --input-bg: #FFFFFF;
+  --navbar-bg: rgba(255, 255, 255, 0.85);
 
   /* Typography Colors */
   --text-primary: var(--color-text);
@@ -53,6 +58,7 @@
   --border-silver: var(--color-border);
   --border-silver-dark: #DEC7D2;
   --border-silver-subtle: #F7EEF3;
+  --border-subtle: #F7EFF1;
 
   /* Status Feedback Colors */
   --success: #16A36A;
@@ -134,6 +140,152 @@
   --z-header: 1000;
   --z-modal-backdrop: 1100;
   --z-modal: 1200;
+}
+
+/* ==========================================================================
+   DARK MODE DESIGN TOKENS (PREMIUM SAAS AESTHETIC)
+   ========================================================================== */
+[data-theme="dark"] {
+  /* Official Dark Palette */
+  --color-white: #FFFFFF;
+  --color-primary: #FF5841;
+  --color-secondary: #C53678;
+  --color-background: #0D1117;
+  --color-surface: #161B22;
+  --color-surface-2: #1C2128;
+  --color-text: #F0F3F6;
+  --color-text-muted: #A0AAB8;
+  --color-border: #30363D;
+  --color-primary-light: rgba(255, 88, 65, 0.15);
+  --color-secondary-light: rgba(197, 54, 120, 0.15);
+  --gradient-brand: linear-gradient(135deg, #FF5841 0%, #C53678 100%);
+  --gradient-brand-hover: linear-gradient(135deg, #E64530 0%, #AA2663 100%);
+
+  /* Primary & Brand Mappings */
+  --primary: var(--color-primary);
+  --primary-hover: #E64530;
+  --secondary: var(--color-secondary);
+  --secondary-hover: #AA2663;
+  --secondary-orange: var(--color-secondary);
+  --light-orange: rgba(255, 88, 65, 0.12);
+  --primary-light: rgba(255, 88, 65, 0.12);
+  --secondary-light: rgba(197, 54, 120, 0.12);
+
+  /* Surfaces & Backgrounds */
+  --background: #0D1117;
+  --surface: #161B22;
+  --surface-secondary: #1C2128;
+  --surface-2: #1C2128;
+  --card-bg: #1C2128;
+  --card-bg-hover: #22272E;
+  --input-bg: #0D1117;
+  --navbar-bg: rgba(13, 17, 23, 0.88);
+
+  /* Typography Colors */
+  --text-primary: #F0F3F6;
+  --text-secondary: #A0AAB8;
+  --text-muted: #768390;
+  --text-charcoal: #F0F3F6;
+  --secondary-text: #A0AAB8;
+
+  /* Borders */
+  --border: #30363D;
+  --border-color: #30363D;
+  --border-silver: #30363D;
+  --border-silver-dark: #444C56;
+  --border-silver-subtle: #21262D;
+  --border-subtle: #21262D;
+
+  /* Status Colors Dark */
+  --success-bg: rgba(22, 163, 106, 0.15);
+  --success-border: rgba(22, 163, 106, 0.4);
+  --error-bg: rgba(220, 53, 69, 0.15);
+  --error-border: rgba(220, 53, 69, 0.4);
+  --warning-bg: rgba(232, 161, 38, 0.15);
+  --warning-border: rgba(232, 161, 38, 0.4);
+
+  /* Shadows Dark */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 0 0 1px #30363D, 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 0 0 1px #30363D, 0 16px 36px rgba(0, 0, 0, 0.6);
+  --shadow-brand: 0 4px 20px rgba(255, 88, 65, 0.28);
+  --shadow-brand-lg: 0 8px 30px rgba(197, 54, 120, 0.35);
+
+  /* Legacy aliases for dark mode */
+  --bg-silver: #0D1117;
+  --bg-card: #1C2128;
+  --bg-hover: #22272E;
+  --light-silver: #1C2128;
+  --white: #161B22;
+}
+
+/* Base Body Theme Transitions */
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ==========================================================================
+   THEME TOGGLE BUTTON COMPONENT
+   ========================================================================== */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: var(--shadow-xs);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--surface-secondary);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-btn i,
+.theme-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background-color: var(--surface-secondary);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  border-color: #F59E0B;
+  color: #F59E0B;
+}
+
+[data-theme="dark"] .theme-toggle-btn .theme-icon-sun {
+  display: none !important;
+}
+
+[data-theme="dark"] .theme-toggle-btn .theme-icon-moon {
+  display: inline-flex !important;
+  color: #F59E0B;
+}
+
+:root:not([data-theme="dark"]) .theme-toggle-btn .theme-icon-moon {
+  display: none !important;
+}
+
+:root:not([data-theme="dark"]) .theme-toggle-btn .theme-icon-sun {
+  display: inline-flex !important;
+  color: var(--color-primary);
 }
 
 /* ==========================================================================
@@ -591,9 +743,13 @@ a:hover {
   flex-shrink: 0;
 }
 
-.panel-icon.icon-orange { color: var(--primary-orange); }
-.panel-icon.icon-blue   { color: #2563EB; }
-.panel-icon.icon-green  { color: var(--success); }
+.panel-icon.icon-orange  { color: var(--primary-orange); }
+.panel-icon.icon-blue    { color: #2563EB; }
+.panel-icon.icon-green   { color: var(--success); }
+.panel-icon.icon-purple  { color: #7C3AED; }
+.panel-icon.icon-violet  { color: var(--color-secondary, #C53678); }
+.panel-icon.icon-amber   { color: #D97706; }
+.panel-icon.icon-red     { color: var(--error, #DC2626); }
 
 .panel-badge {
   font-size: 11px;

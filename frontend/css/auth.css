@@ -625,3 +625,82 @@
     gap: 8px;
   }
 }
+
+
+/* ==========================================================================
+   DARK MODE SUITE FOR AUTHENTICATION PAGES (LOGIN, REGISTER, FORGOT-PASSWORD)
+   ========================================================================== */
+[data-theme="dark"] .auth-page,
+[data-theme="dark"] .auth-container {
+  background-color: #0D1117;
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .auth-card {
+  background-color: #161B22;
+  border: 1px solid #30363D;
+  box-shadow: 0 0 0 1px #30363D, 0 16px 40px rgba(0, 0, 0, 0.6);
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .auth-title {
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .auth-subtitle {
+  color: #A0AAB8;
+}
+
+[data-theme="dark"] .form-label {
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .form-input {
+  background-color: #0D1117;
+  border: 1px solid #30363D;
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .form-input:focus {
+  border-color: #FF5841;
+  background-color: #161B22;
+  box-shadow: 0 0 0 3px rgba(255, 88, 65, 0.2);
+}
+
+[data-theme="dark"] .input-icon {
+  color: #768390;
+}
+
+[data-theme="dark"] .social-btn,
+[data-theme="dark"] .btn-google {
+  background-color: #0D1117;
+  border: 1px solid #30363D;
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .social-btn:hover,
+[data-theme="dark"] .btn-google:hover {
+  background-color: #1C2128;
+  border-color: #FF5841;
+}
+
+[data-theme="dark"] .auth-divider {
+  color: #768390;
+}
+
+[data-theme="dark"] .auth-divider::before,
+[data-theme="dark"] .auth-divider::after {
+  border-bottom-color: #30363D;
+}
+
+[data-theme="dark"] .auth-footer,
+[data-theme="dark"] .remember-me label {
+  color: #A0AAB8;
+}
+
+.auth-theme-toggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+}

@@ -27,12 +27,29 @@ function initPerformanceAnalytics() {
   const insightsSection = document.getElementById('analyticsInsightsSection');
 
   let currentPeriod = 'all';
+  let cachedAnalyticsData = null;
   let chartInstances = {
     trend: null,
     category: null,
     difficulty: null,
     progress: null,
   };
+
+  function getThemeChartColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return {
+      isDark,
+      textColor: isDark ? '#A0AAB8' : '#74717A',
+      gridColor: isDark ? '#30363D' : '#F0E2E8',
+      tooltipBg: isDark ? '#1C2128' : '#252525'
+    };
+  }
+
+  window.addEventListener('avenir-theme-changed', () => {
+    if (cachedAnalyticsData) {
+      renderAllCharts(cachedAnalyticsData);
+    }
+  });
 
   // Safe Chart instance destructor
   function destroyChart(key) {
@@ -71,6 +88,7 @@ function initPerformanceAnalytics() {
 
       const data = await getPerformanceData(period);
       if (!data) throw new Error('No analytics data received from server.');
+      cachedAnalyticsData = data;
 
       renderStatCards(data);
       renderInsights(data);
@@ -175,6 +193,8 @@ function initPerformanceAnalytics() {
     gradient.addColorStop(0, 'rgba(255, 88, 65, 0.25)');
     gradient.addColorStop(1, 'rgba(197, 54, 120, 0.02)');
 
+    const themeColors = getThemeChartColors();
+
     if (typeof Chart !== 'undefined') {
       chartInstances.trend = new Chart(canvas, {
         type: 'line',
@@ -189,7 +209,7 @@ function initPerformanceAnalytics() {
               backgroundColor: gradient,
               fill: true,
               tension: 0.35,
-              pointBackgroundColor: '#FFFFFF',
+              pointBackgroundColor: themeColors.isDark ? '#1C2128' : '#FFFFFF',
               pointBorderColor: '#FF5841',
               pointBorderWidth: 2,
               pointRadius: 5,
@@ -206,7 +226,7 @@ function initPerformanceAnalytics() {
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#252525',
+              backgroundColor: themeColors.tooltipBg,
               titleFont: { size: 12, weight: '700' },
               bodyFont: { size: 13, weight: '600' },
               padding: 10,
@@ -226,7 +246,7 @@ function initPerformanceAnalytics() {
           scales: {
             x: {
               grid: { display: false },
-              ticks: { font: { size: 11 }, color: '#74717A' },
+              ticks: { font: { size: 11 }, color: themeColors.textColor },
             },
             y: {
               min: 0,
@@ -234,10 +254,10 @@ function initPerformanceAnalytics() {
               ticks: {
                 stepSize: 20,
                 font: { size: 11 },
-                color: '#74717A',
+                color: themeColors.textColor,
                 callback: (val) => `${val}%`,
               },
-              grid: { color: '#F0E2E8' },
+              grid: { color: themeColors.gridColor },
             },
           },
         },
@@ -285,6 +305,8 @@ function initPerformanceAnalytics() {
       '#FF5841', // Violet (Domain)
     ];
 
+    const themeColors = getThemeChartColors();
+
     if (typeof Chart !== 'undefined') {
       chartInstances.category = new Chart(canvas, {
         type: 'bar',
@@ -306,7 +328,7 @@ function initPerformanceAnalytics() {
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#252525',
+              backgroundColor: themeColors.tooltipBg,
               padding: 10,
               cornerRadius: 8,
               callbacks: {
@@ -321,17 +343,17 @@ function initPerformanceAnalytics() {
           scales: {
             x: {
               grid: { display: false },
-              ticks: { font: { size: 10.5, weight: '600' }, color: '#252525' },
+              ticks: { font: { size: 10.5, weight: '600' }, color: themeColors.textColor },
             },
             y: {
               min: 0,
               max: 100,
               ticks: {
                 stepSize: 20,
-                color: '#74717A',
+                color: themeColors.textColor,
                 callback: (val) => `${val}%`,
               },
-              grid: { color: '#F0E2E8' },
+              grid: { color: themeColors.gridColor },
             },
           },
         },

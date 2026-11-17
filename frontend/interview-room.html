@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AVENIR AI Live Mock Interview Room. Answer AI-powered technical and behavioral questions via text or voice, and receive instant feedback.">
   <title>Interview - AVENIR AI</title>
+  <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/interview.css">
@@ -34,8 +35,12 @@
         </div>
       </div>
 
-      <div class="header-right">
-<div class="timer-display" id="interviewTimer">
+      <div class="header-right" style="display: flex; align-items: center; gap: 12px;">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle theme">
+          <i data-lucide="sun" class="theme-icon-sun"></i>
+          <i data-lucide="moon" class="theme-icon-moon"></i>
+        </button>
+        <div class="timer-display" id="interviewTimer">
           <i data-lucide="clock" class="timer-icon"></i>
           <span class="time-text" id="timeRemaining">03:00</span>
         </div>

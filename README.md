@@ -1,20 +1,50 @@
 # AVENIR AI
 
+<div align="center">
+
 **Your Future Starts Here.**
 
-AVENIR AI is an intelligent mock interview and career preparation platform powered by Google Gemini AI. It helps students, fresh graduates, and job seekers prepare for interviews through personalized AI-powered mock interviews, resume analysis, and learning recommendations.
+*A world-class, premium AI-powered mock interview & career preparation SaaS platform inspired by Linear, Stripe, and Vercel.*
 
-## Features
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-Backend-000000?style=flat&logo=express&logoColor=white)](https://expressjs.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-FFCA28?style=flat&logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.0%20Flash-4285F4?style=flat&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Dark Mode](https://img.shields.io/badge/UI%2FUX-Light%20%26%20Dark%20Mode-FF5841?style=flat)](frontend/css/global.css)
+[![License](https://img.shields.io/badge/License-Proprietary-C53678?style=flat)](#license)
 
-- **AI Mock Interviews** - Practice with AI interviewers tailored to your target role
-- **Intelligent Evaluation** - Get detailed scoring on technical accuracy, clarity, and communication
-- **Resume Analysis** - AI-powered resume review with ATS compatibility insights
-- **Voice Interviews** - Answer questions using voice with speech-to-text
-- **Performance Analytics** - Track your progress with detailed charts and trends
-- **Learning Roadmap** - Personalized study plans based on your weaknesses
-- **Group Interviews** - Practice with peers in group mock sessions
-- **Leaderboard** - Compare your performance with other users
-- **PDF Reports** - Download detailed interview reports
+</div>
+
+---
+
+AVENIR AI transforms technical and behavioral interview preparation with intelligent, role-tailored mock sessions, real-time voice recognition, ATS-grade resume optimization, dynamic 5-tier weighted evaluation, and personalized learning roadmaps.
+
+## Key Features
+
+- **Linear & Stripe-Grade UI/UX**: Ultra-clean, premium SaaS aesthetic with subtle glassmorphism, smooth micro-interactions, responsive sidebars, and universal Light & Dark Mode persistence.
+- **Role-Tailored AI Mock Interviews**: Dynamic multi-turn interviews custom-built for 12+ industry roles across Software Engineering, Data, Cloud, AI/ML, and Cybersecurity.
+- **Intelligent 5-Tier Weighted Evaluation**: Rigorous scoring across Technical Accuracy (30%), Problem Solving (25%), Communication (20%), Completeness (15%), and Practical Knowledge (10%) with per-question breakdowns and zero hallucinated scores.
+- **Voice-Powered Practice**: Dual-mode text and voice interaction powered by Web Speech API speech-to-text with live waveforms.
+- **ATS Resume Analyzer**: Extracts key skills, flags missing keywords, calculates ATS compatibility, and provides actionable bullet improvements.
+- **Interactive Performance Analytics**: Rich canvas-based trend charts, category breakdowns, and difficulty metrics that adapt seamlessly across light and dark themes.
+- **Personalized Learning Roadmaps**: Week-by-week structured curriculum targeting candidate-specific weak areas.
+- **Peer Group Interviews**: Shared room codes with peer candidate grids for collaborative mock sessions.
+- **Community Leaderboard & PDF Export**: Competitive ranking and exportable executive-ready evaluation reports.
+
+## Design System & Theme Engine
+
+AVENIR AI features a cohesive brand identity with zero-FOUC (Flash of Unstyled Content) Light/Dark mode transitions:
+
+| Token | Light Mode | Dark Mode (Linear-Inspired) |
+|---|---|---|
+| **Primary Coral** | `#FF5841` | `#FF5841` |
+| **Secondary Pink** | `#C53678` | `#C53678` |
+| **Background** | `#FFFFFF` | `#0D1117` |
+| **Surface Secondary** | `#FFF8F7` | `#161B22` |
+| **Card Surface** | `#FFFFFF` | `#1C2128` |
+| **Primary Text** | `#242424` | `#F0F3F6` |
+| **Secondary Text** | `#74717A` | `#A0AAB8` |
+| **Border Color** | `#F0E2E8` | `#30363D` |
 
 ## Tech Stack
 

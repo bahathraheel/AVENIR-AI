@@ -3023,3 +3023,111 @@
   margin: 0;
 }
 
+
+
+/* ==========================================================================
+   DARK MODE SUITE FOR INTERVIEW ROOM, SETUP, AND RESULTS
+   ========================================================================== */
+[data-theme="dark"] .interview-body,
+[data-theme="dark"] .interview-room-layout,
+[data-theme="dark"] .interview-setup-layout,
+[data-theme="dark"] .results-body {
+  background-color: #0D1117;
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .interview-card,
+[data-theme="dark"] .question-box,
+[data-theme="dark"] .question-container,
+[data-theme="dark"] .answer-section,
+[data-theme="dark"] .evaluation-card,
+[data-theme="dark"] .setup-panel,
+[data-theme="dark"] .config-step-card,
+[data-theme="dark"] .score-breakdown-card,
+[data-theme="dark"] .detail-card,
+[data-theme="dark"] .results-score-card,
+[data-theme="dark"] .plan-topic-item {
+  background-color: #1C2128 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .question-title,
+[data-theme="dark"] .q-title,
+[data-theme="dark"] .session-title,
+[data-theme="dark"] .section-subheading,
+[data-theme="dark"] .commentary-title {
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .question-text,
+[data-theme="dark"] .answer-text,
+[data-theme="dark"] .qa-text,
+[data-theme="dark"] .session-summary-text,
+[data-theme="dark"] .commentary-text {
+  color: #A0AAB8 !important;
+}
+
+[data-theme="dark"] .interview-textarea,
+[data-theme="dark"] .answer-textarea,
+[data-theme="dark"] #candidateAnswerText {
+  background-color: #0D1117 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .accordion-header {
+  background-color: #161B22 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .accordion-content {
+  background-color: #1C2128 !important;
+  border-color: #30363D !important;
+  color: #F0F3F6 !important;
+}
+
+[data-theme="dark"] .accordion-header:hover {
+  background-color: #1C2128 !important;
+  border-color: #FF5841 !important;
+}
+
+[data-theme="dark"] .option-card,
+[data-theme="dark"] .difficulty-card,
+[data-theme="dark"] .role-pill,
+[data-theme="dark"] .category-tab-btn {
+  background-color: #161B22;
+  border-color: #30363D;
+  color: #F0F3F6;
+}
+
+[data-theme="dark"] .option-card:hover,
+[data-theme="dark"] .difficulty-card:hover,
+[data-theme="dark"] .category-tab-btn:hover {
+  border-color: #FF5841;
+  background-color: #1C2128;
+}
+
+[data-theme="dark"] .option-card.selected,
+[data-theme="dark"] .difficulty-card.selected,
+[data-theme="dark"] .category-tab-btn.active {
+  background: rgba(255, 88, 65, 0.15) !important;
+  border-color: #FF5841 !important;
+  color: #FF5841 !important;
+}
+
+[data-theme="dark"] .voice-status-box,
+[data-theme="dark"] .recording-box {
+  background-color: #161B22;
+  border-color: #30363D;
+}
+
+[data-theme="dark"] .score-circle-lg,
+[data-theme="dark"] .score-circle {
+  background-color: #161B22;
+}
+
+[data-theme="dark"] .progress-track {
+  background-color: #30363D !important;
+}
